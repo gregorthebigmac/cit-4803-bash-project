@@ -60,3 +60,25 @@ Now that you're in the "playground" branch, you can do whatever you want with th
 You should see a readout of what files you changed. The git equivalent of making a new game save that you can come back to later is called making a "git commit." This creates a unique save point within the repo and notes the changes you made this time. To create a git commit, type the following into the terminal:
 
     $ git commit -m "my first git commit"
+
+## What did I just do?
+
+So the first part,
+
+    $ git commit
+
+did exactly what we just said it would. The part in quotes is a brief description of what you did in the commit (except not this time.) Normally, you'd put something in there, like "Changed variable [xyz] to [abc] and changed function call to reflect that" or something short and descriptive like that to help you (and others on your team) figure out what this change was, and why it was important enough for you to commit it. The "-m" flag says I'm going to put my description in double-quotes right here and now, while the "-a" flag tells git to open up a text editor for your to manually type in your commit description, which it will do. For now, let's keep it simple, and just go with "-m" and type it right there. Now, if you did everything correctly, it should say something like "1 file changed, [blah blah] insertions/deletions, [blah blah]." That's fine. That means it worked. Now we're ready to *push* our commit to the "remote branch" (which lives on github). Right now, you're working in the "local" branch, which lives on your machine, and you're *pushing* your changes into the "remote" branch (which lives on github). We do that with:
+
+    $ git push
+
+This time, it will ask for your username and password *regardless* of whether or not this is a private or public repo. That's because not just anyone can push to a git repo. Even with public repos, you must have permission to push code to a repo. It's both a security and safety feature. You don't want random anonymous users pushing code into your repo, even if it's open source software.
+
+Now let's say you made a mistake, or somehow broke your code, and you want to restore what you had before, and undo ALL of your changes since your last commit/push. This is pretty straightforward, even if the syntax seems a little weird.
+
+    $ git reset --hard HEAD
+
+This will completely undo everything you did and put you back to the most recent commit/push you made. If it turns out your mistake is much worse than that, and you want to go back to an even *earlier* commit, that's a bit more involved, and is a bit too complicated for this simple write-up, so just IM me on slack if you find yourself in this situation, and we'll go through it together. But the commands I showed you here should be enough to get you by if you're working on your own repo. There's just one more command you need to know, and while on the surface, it seems easy and straightforward, it can cause some headaches, depending on the situation, so I'm only going to cover the easy part. If someone else on the team modified the remote branch (like you just did when you committed and pushed your code to the remote branch) and you want to get their changes on your local branch, you need to do a git pull:
+
+    $ git pull
+
+This will "pull" all the changes from the remote branch into your local branch. The reason this can get a bit hairy is when you've made changes on your local branch that haven't been committed and pushed to the remote branch. This can (and usually does) cause a conflict, which *can* be difficult to fix. Just IM me if that happens.
