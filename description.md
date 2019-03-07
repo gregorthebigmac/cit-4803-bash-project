@@ -25,3 +25,12 @@
 4. Walkthrough and explain each of the scripts and how the logic is built
 5. If a live demo can't be setup a recorded video of the demo part can also be presented, it needs to be detailed enough to cover all aspects along with the presentation
 6. Other groups will contribute to the presentation by asking questions about your design for further analysis (A graded activity)
+7. Dropbox will be opened for the Final Project and a text copy of all the scripts will need to be submitted as well as screen shots of the BUA in action with all it's features
+
+## Table Showing User Roles
+
+| Roles        | General Files | Project Files | Financial Files |
+|--------------|:-------------:|:-------------:|:---------------:|
+| Power User   |       X       |       X       |        X        |
+| General User |       X       |       X       |                 |
+| Intern User  |       X       |               |                 |
