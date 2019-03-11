@@ -1,0 +1,6 @@
+# list of commands the user may enter:
+# cmd 	| args			| description
+chgpass | -u [username]	| change [username]'s password
+exit	| N/A 			| quit program
+mkfile	| [filename]	| create file
+del		| [filename]	| delete file
