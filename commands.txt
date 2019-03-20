@@ -1,6 +1,8 @@
 # list of commands the user may enter:
-# cmd 	| args			| description
-chgpass | -u [username]	| change [username]'s password
-exit	| N/A 			| quit program
-mkfile	| [filename]	| create file
-del		| [filename]	| delete file
+# cmd 	| args				| description					| Example
+#-------|-------------------|-------------------------------|----------
+chgpass | -u [username]		| change [username]'s password	| chgpass -u dsmith
+exit	| N/A 				| quit program					| exit
+mkfile	| [filename]		| create file 					| mkfile sample.txt
+del		| [filename]		| delete file					| del sample.txt
+cd		| [directory path]	| change directory				| cd /root
