@@ -13,6 +13,3 @@
 #			b. NO	-> Fail with [command] usage page (see commands.txt)
 #		2. NO	-> Fail with message "[command] not found."
 #	b. continue main_loop()
-
-get_file=$(grep user1 users.txt)
-cat $get_file
