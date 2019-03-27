@@ -9,7 +9,10 @@
 	2. General User
 	3. Intern User
 6. Script or mechanism for users to log in using the default password and change their password
-7. Create the following separate directory areas for your system 1) General Files 2) Project Files 3)Financial files - these can be created manually
+7. Create the following separate directory areas for your system. These can be created manually
+	1. General Files
+	2. Project Files
+	3. Financial files
 8. Access to the directory details (which files are in the directory) is to be granted by the following roles based mapping
 9. Once a user of a specific role has logged in, the user can request to view the files in the directory it has access to
 10. All users can create new text files and add text to them in the specific directories/areas where they are authorized

@@ -1,0 +1,9 @@
+# list of commands the user may enter:
+# cmd 	| args											| description					| Example
+#-------|-----------------------------------------------|-------------------------------|---------------------------------------------------
+chgpass | -u [username]									| change [username]'s password	| chgpass -u dsmith
+exit	| N/A 											| quit program					| exit
+mkfile	| [filename]									| create file 					| mkfile sample.txt
+del		| [filename]									| delete file					| del sample.txt
+cd		| [directory path]								| change directory				| cd /root
+move	| [input path/to/file] [output path/to/file]	| move file						| move /root/sample.txt /root/some_dir/sample.txt
