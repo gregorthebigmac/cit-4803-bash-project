@@ -1,5 +1,6 @@
 # user | pass | permissions (for now, just a 1, 2, or 3)
-user1, password, 1, 3
-user2, swordfish, 2, 3
-user3, sneakers, 1, 2
-user4, hackers, 1, 2, 3
+admin,admin,1,2,3
+user1,password,1,3
+user2,swordfish,2,3
+user3,sneakers,1,2
+user4,hackers,1,2,3
