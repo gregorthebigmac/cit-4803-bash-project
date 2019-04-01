@@ -1,0 +1,7 @@
+{
+	"editor.acceptSuggestionOnEnter": "off",
+	"editor.tabCompletion": "on",
+	"editor.tabSize": 2,
+	"zenMode.hideTabs": false,
+	"bashBeautify.tabSize": 2
+}
