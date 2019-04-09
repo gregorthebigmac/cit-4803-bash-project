@@ -1,0 +1,15 @@
+# This file will contain absolutely nothing but a list of available commmands,
+# and what BASH command they will execute if they pass the permissions check.
+
+# Bashuntu Command 	| Ubuntu Command
+list								| ls
+mkfile							| touch
+
+# For explanation purposes, this is how it will work, but in actuality, it will
+# look something more like this:
+
+list ls
+mkfile touch
+
+# That's it. No extra characters, just a space. No tabs, no comment '#' markers,
+# nothing. It'll make the file easier to parse.
