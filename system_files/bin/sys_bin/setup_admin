@@ -2,46 +2,105 @@
 
 # this is a one-time use script for initial setup of the admin account.
 
-# High Level Description:
-# 1. Prompt the admin to create a username
-user_is_valid=false
-while [ $user_is_valid == false ]; do
-  echo "Usernames MUST be all lowercase"
-  echo "Usernames may NOT contain spaces or special characters."
-  echo "Please enter your new username:"
-  read username
-  echo "You put $username. Is this correct? y/n"
-  read confirm
-  if [ $confirm == "y" ] || [ $confirm == "Y" ]; then
-	# 1a. It CANNOT be "admin" or "root" or "user"
-	# 1b. It CANNOT contain spaces or special characters
-    pattern=" |'"
-    if [[ $username =~ [A-Z] ]]; then
-	  echo "You entered $username. Usernames CANNOT contain uppercase letters. Try again."
-	elif [[ $username =~ $pattern ]]; then
-	    echo "Usernames CANNOT contain spaces! And don't think you can trick me by putting it in quotes! Try again."
-	elif [[ $username == *"admin"* ]]; then
-	  echo "Your username cannot be \"admin\", nor can it *contain* the word \"admin\". Try again."
-	elif [[ $username == *"root"* ]]; then
-	  echo "Don't make your username \"root\" or contain root in the name in any way. That's too easy to guess. Try again."
-	elif [[ $username == *"user"* ]]; then
-	  echo "I thought you were trying to keep people from guessing your username? Don't use \"user\" as a username. Try again."
-	elif [[ $username == *['!'@\#\$%^\&*()_+]* ]]; then
-	  echo "What part of NO SPECIAL CHARACTERS did you not understand? Try again."
-	else
-	  user_is_valid=true
-	  echo "Great! Your username is now $username. Now let's create a password..."
-	fi
-  else echo "Okay, try again."
-  fi
-done
+set -o pipefail		# trace error through pipes
+set -o errtrace		# trace error through "time command" and other functions
 
-# 2. Prompt the admin to create a password
-#	b. [todo] should we enforce tough password?
-#		1. Kyle: I'm leaning towards YES
-# 3. Save the user to file
-#	a. store username
-#	b. store password
-#		1. [todo] should we encrypt (or otherwise obfuscate) it?
+# Function for catching and printing errors through pipes
+	# The syntax for calling this to correctly output errors is:
+	# trap 'error ${LINENO} ${?}' ERR
+error() {
+	job="$0"
+	last_line="$1"
+	last_error="$2"
+	echo "ERROR in ${job} : line ${last_line} with exit code ${last_error}"
+	exit 1
+}
+
+root_dir=$(pwd)
+
+user_is_valid=0
+password_is_valid=0
+username_valid=""
+password_valid=""
+while (( $user_is_valid == 0 )); do
+	echo "Usernames MUST be all lowercase"
+	echo "Usernames may NOT contain spaces or special characters."
+	echo "Please enter your new username:"
+	read temp_user
+	echo "You put $temp_user. Is this correct? y/n"
+	read confirm
+	if [ $confirm == "y" ] || [ $confirm == "Y" ]; then
+		# 1a. It CANNOT be "admin" or "root" or "user"
+		# 1b. It CANNOT contain spaces or special characters
+		pattern=" |'"
+		if [[ $temp_user =~ [A-Z] ]]; then
+			echo "You entered $temp_user. Usernames CANNOT contain uppercase letters. Try again."
+		elif [[ $temp_user =~ $pattern ]]; then
+			echo "Usernames CANNOT contain spaces! And don't think you can trick me by putting it in quotes! Try again."
+		elif [[ $temp_user == *"admin"* ]]; then
+			echo "Your username cannot be \"admin\", nor can it *contain* the word \"admin\". Try again."
+		elif [[ $temp_user == *"root"* ]]; then
+			echo "Don't make your username \"root\" or contain root in the name in any way. That's too easy to guess. Try again."
+		elif [[ $temp_user == *"user"* ]]; then
+			echo "I thought you were trying to keep people from guessing your username? Don't use \"user\" as a username. Try again."
+		elif [[ $temp_user == *['!'@\#\$%^\&*()_+]* ]]; then
+			echo "What part of NO SPECIAL CHARACTERS did you not understand? Try again."
+		else
+			((user_is_valid+1))
+			username_valid=$temp_user
+		fi
+	else echo "Okay, try again."
+	fi
+done
+echo "Great! Your username is now $valid_user."
+while (( $password_is_valid == 0 )); do
+	echo "Passwords MUST contain at least TWO lower case letters!"
+	echo "Passwords MUST contain at least TWO upper case letters!"
+	echo "Passwords MUST contain at least TWO numbers!"
+	echo "Passwords MUST contain at least TWO special characters!"
+	echo "Create a password for $valid_user..."
+	read -s password
+	echo "Enter again to confirm..."
+	read -s password2
+	if [[ "$password" == "$password2" ]]; then
+		pass_length=${#password}
+		if (( $pass_length < 8 )); then
+			echo "Password must be 8 characters or more!"
+		fi
+		spec_char=0
+		upper_char=0
+		lower_char=0
+		num_char=0
+		for (( i=0; i<${#password}; i++ )); do
+			num='^[0-9]+$'
+			low_char='[a-z]+$'
+			up_char='[A-Z]+$'
+			spc_char='['!'@#\$%^\&*()_+]'
+			if [[ ${password:$i:1} =~ $num ]]; then
+				num_char=$((num_char + 1))
+			elif [[ ${password:$i:1} =~ $low_char ]]; then
+				lower_char=$((lower_char + 1))
+			elif [[ ${password:$i:1} =~ $up_char ]]; then
+				upper_char=$((upper_char + 1))
+			elif [[ ${password:$i:1} =~ $spc_char ]]; then
+				spec_char=$((spec_char + 1))
+			else echo "'${password:$i:1}' is not allowed!"
+			fi
+		done
+		if (( $spec_char > 1 )); then
+			if (( $upper_char > 1 )); then
+				if (( $lower_char > 1 )); then
+					if (( $num_char > 1 )); then
+						password_valid = $password
+					else echo "mkusr: Passwords must contain at least 2 numbers!"
+					fi
+				else echo "mkusr: Passwords must contain at least 2 lowercase characters!"
+				fi
+			else echo "mkusr: Passwords must contain at least 2 uppercase characters!"
+			fi
+		else echo "mkusr: Passwords must contain at least 2 special characters!"
+		fi
+	fi
+done
 #	c. store permissions (basically ALL is permitted for admin)
 # 4. run main.sh
