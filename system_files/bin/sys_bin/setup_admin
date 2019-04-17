@@ -47,44 +47,49 @@ while (( $user_is_valid == 0 )); do
 		elif [[ $temp_user == *['!'@\#\$%^\&*()_+]* ]]; then
 			echo "What part of NO SPECIAL CHARACTERS did you not understand? Try again."
 		else
-			(( user_is_valid+1 ))
+			(( user_is_valid=user_is_valid+1 ))
 			username_valid=$temp_user
 		fi
 	else echo "Okay, try again."
 	fi
 done
 echo "Great! Your username is now $valid_user."
+echo "Now we need you to create a password for $valid_user."
+echo "Passwords MUST contain at least TWO lower case letters!"
+echo "Passwords MUST contain at least TWO upper case letters!"
+echo "Passwords MUST contain at least TWO numbers!"
+echo "Passwords MUST contain at least TWO special characters!"
 while (( $password_is_valid == 0 )); do
-	echo "Passwords MUST contain at least TWO lower case letters!"
-	echo "Passwords MUST contain at least TWO upper case letters!"
-	echo "Passwords MUST contain at least TWO numbers!"
-	echo "Passwords MUST contain at least TWO special characters!"
-	echo "Create a password for $valid_user..."
+	echo "Create a password for $username_valid..."
 	read -s password
 	echo "Enter again to confirm..."
 	read -s password2
+	spec_char=0
+	upper_char=0
+	lower_char=0
+	num_char=0
 	if [[ "$password" == "$password2" ]]; then
 		pass_length=${#password}
 		if (( $pass_length < 8 )); then
 			echo "Password must be 8 characters or more!"
 		fi
-		spec_char=0
-		upper_char=0
-		lower_char=0
-		num_char=0
 		for (( i=0; i<${#password}; i++ )); do
 			num='^[0-9]+$'
 			low_char='[a-z]+$'
 			up_char='[A-Z]+$'
 			spc_char='['!'@#\$%^\&*()_+]'
 			if [[ ${password:$i:1} =~ $num ]]; then
-				num_char=$((num_char + 1))
+				echo "found a number!"
+				num_char=$(( num_char=num_char+1 ))
 			elif [[ ${password:$i:1} =~ $low_char ]]; then
-				lower_char=$((lower_char + 1))
+				echo "found a lower case character!"
+				lower_char=$(( lower_char=lower_char+1 ))
 			elif [[ ${password:$i:1} =~ $up_char ]]; then
-				upper_char=$((upper_char + 1))
+				echo "found an upper case character!"
+				upper_char=$(( upper_char=upper_char+1 ))
 			elif [[ ${password:$i:1} =~ $spc_char ]]; then
-				spec_char=$((spec_char + 1))
+				echo "found a special character!"
+				spec_char=$(( spec_char=spec_char+1 ))
 			else echo "'${password:$i:1}' is not allowed!"
 			fi
 		done
@@ -92,7 +97,8 @@ while (( $password_is_valid == 0 )); do
 			if (( $upper_char > 1 )); then
 				if (( $lower_char > 1 )); then
 					if (( $num_char > 1 )); then
-						password_valid = $password
+						(( password_is_valid=password_is_valid+1 ))
+						password_valid=$password
 					else echo "mkusr: Passwords must contain at least 2 numbers!"
 					fi
 				else echo "mkusr: Passwords must contain at least 2 lowercase characters!"
