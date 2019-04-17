@@ -11,7 +11,7 @@ echo LOADING LOGIN SYSTEM
 echo PLEASE WAIT...
 
 # home
-cls
+tput reset
 
 echo --------------
 
@@ -47,7 +47,7 @@ color 7
 
 title SIGNUP
 
-cls
+tput reset
 
 set /p "nuser=New Username: "
 
@@ -59,7 +59,7 @@ goto npass
 
 # usertaken
 
-cls
+tput reset
 
 color c
 
@@ -87,7 +87,7 @@ echo set "auser=%nuser%"> %nuser%.bat
 
 echo set "apass=%npass%">> %nuser%.bat
 
-cls
+tput reset
 
 color a
 
@@ -105,7 +105,7 @@ color 7
 
 title LOGIN
 
-cls
+tput reset
 
 set /p "user=Username: "
 
@@ -119,7 +119,7 @@ goto usernotexist
 
 color c
 
-cls
+tput reset
 
 echo "USERNAME doesn't exist."
 
@@ -140,7 +140,7 @@ goto passinvalid
 
 color c
 
-cls
+tput reset
 
 echo "The PASSWORD you entered is INVALID"
 
@@ -152,7 +152,7 @@ goto login
 
 color a
 
-cls
+tput reset
 
 echo "You have Successfully logged in %user%"
 
@@ -168,7 +168,7 @@ color 7
 
 title DELETE ACCOUNT
 
-cls
+tput reset
 
 set /p "duser=Username: "
 
@@ -190,7 +190,7 @@ goto passerror
 
 #contin2
 
-cls
+tput reset
 
 echo "Are you sure you want to echo delete you account?"
 
@@ -204,7 +204,7 @@ del "%duser%.bat"
 
 ping localhost -n 2 >nul
 
-cls
+tput reset
 
 color a
 
@@ -220,7 +220,7 @@ goto home
 
 color c
 
-cls
+tput reset
 
 echo "ERROR"
 
@@ -234,7 +234,7 @@ goto signup
 
 color c
 
-cls
+tput reset
 
 echo "PASSWORD INVALID"
 
@@ -246,11 +246,10 @@ goto delaccount
 
 color c
 
-cls
+tput reset
 
 echo "USERNAME doesn't exist."
 
 pause >nul
 
 goto delaccount
-
