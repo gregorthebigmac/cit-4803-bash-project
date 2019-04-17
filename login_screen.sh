@@ -5,13 +5,12 @@
 #	and either grant access to the user or deny them if the credentials are
 #	incorrect.
 
-@echo off
-:startup
+# startup
 
 echo LOADING LOGIN SYSTEM
 echo PLEASE WAIT...
 
-:home
+# home
 cls
 
 echo --------------
@@ -42,7 +41,7 @@ if ["%a%"] == ["3"] goto delaccount
 
 if ["%a%"] == [""] goto home
 
-:signup
+# signup
 
 color 7
 
@@ -58,7 +57,7 @@ if EXIST "%nuser%.bat" goto usertaken
 
 goto npass
 
-:usertaken
+# usertaken
 
 cls
 
@@ -70,7 +69,7 @@ pause >nul
 
 goto signup
 
-:npass
+# npass
 
 set /p "npass=New Password: "
 
@@ -82,7 +81,7 @@ if ["%npassr%"] == ["%npass%"] goto signupc
 
 goto signuperror
 
-:signupc
+# signupc
 
 echo set "auser=%nuser%"> %nuser%.bat
 
@@ -100,7 +99,7 @@ pause >nul
 
 goto home
 
-:login
+# login
 
 color 7
 
@@ -116,7 +115,7 @@ if EXIST "%user%.bat" goto pass
 
 goto usernotexist
 
-:usernotexist
+# usernotexist
 
 color c
 
@@ -128,9 +127,8 @@ pause >nul
 
 goto login
 
-:pass
-
-call %user%.bat
+# pass
+# call %user%.bat
 
 set /p "pass=Password: "
 
@@ -138,7 +136,7 @@ if ["%pass%"] == ["%apass%"] goto logingood
 
 goto passinvalid
 
-:passinvalid
+# passinvalid
 
 color c
 
@@ -150,7 +148,7 @@ pause >nul
 
 goto login
 
-:logingood
+# logingood
 
 color a
 
@@ -164,7 +162,7 @@ ping localhost -n 7 >nul
 
 goto home
 
-:delaccount
+# delaccount
 
 color 7
 
@@ -180,7 +178,7 @@ if exist "%duser%.bat" goto contin
 
 goto usernotexistdel
 
-:contin
+# contin
 
 call %duser%.bat
 
@@ -190,7 +188,7 @@ if ["%dpass%"] == ["%apass%"] goto contin2
 
 goto passerror
 
-:contin2
+#contin2
 
 cls
 
@@ -218,7 +216,7 @@ ping localhost -n 3 >nul
 
 goto home
 
-:signuperror
+# signuperror
 
 color c
 
@@ -232,7 +230,7 @@ ping localhost -n 2 >nul
 
 goto signup
 
-:passerror
+# passerror
 
 color c
 
@@ -244,7 +242,7 @@ pause >nul
 
 goto delaccount
 
-:usernotexistdel
+# usernotexistdel
 
 color c
 
