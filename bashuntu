@@ -29,7 +29,7 @@ if does_admin_account_exist=$(cat $root_dir/system_files/config/users | grep "ad
 		fi
 	else
 		echo "Proceeding to login screen..."
-		./login.sh	# 2b. NO 	-> admin account has been created. Run login.sh
+		$root_dir/system_files/bin/sys_bin/login.sh	# 2b. NO 	-> admin account has been created. Run login.sh
 	fi
 else trap 'error ${LINENO} ${?}' ERR
 fi

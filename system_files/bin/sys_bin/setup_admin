@@ -9,6 +9,7 @@ set -o errtrace		# trace error through "time command" and other functions
 	# The syntax for calling this to correctly output errors is:
 	# trap 'error ${LINENO} ${?}' ERR
 error() {
+	# TODO: Add error logging to a file that EVERYONE can read (not just power user)
 	job="$0"
 	last_line="$1"
 	last_error="$2"
@@ -46,7 +47,7 @@ while (( $user_is_valid == 0 )); do
 		elif [[ $temp_user == *['!'@\#\$%^\&*()_+]* ]]; then
 			echo "What part of NO SPECIAL CHARACTERS did you not understand? Try again."
 		else
-			((user_is_valid+1))
+			(( user_is_valid+1 ))
 			username_valid=$temp_user
 		fi
 	else echo "Okay, try again."
