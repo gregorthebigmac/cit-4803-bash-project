@@ -109,5 +109,17 @@ while (( $password_is_valid == 0 )); do
 		fi
 	fi
 done
+echo -n "Your credentials are being stored..."
+#echo "$username_valid $password_valid power" >> "$root_dir/system_files/config/users"
+final_user_pass="$username_valid $password_valid power"
+echo -n "Reading file..."
+file_content=$(cat $root_dir/system_files/config/users)
+echo "[ok]"
+for i in "${file_content[@]}"; do
+	echo "$i"
+done
+echo "File content read."
+
 #	c. store permissions (basically ALL is permitted for admin)
+echo "[ok]"
 # 4. run main.sh
