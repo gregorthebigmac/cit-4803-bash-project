@@ -1,0 +1,110 @@
+#!/bin/bash
+
+# This script creates a new user in the "bashuntu" shell, provided the following checks pass:
+# 1. Does the user have permission to execute this command?
+root_dir=$(awk 'NR == 1' ../config/.root_dir)
+username=$(awk 'NR == 1' "$root_dir/system_files/config/.logged_in")
+password="password"
+new_username="$1"
+new_user_group="$2"
+#			A. ONLY users belonging to the group "power" may execute this script
+#			B. Is user a member of "power" ?
+if [ "$username" == "power" ] || [ "$username" == "dev" ]; then
+	if [ -z "$1" ]; then
+		echo "What would you like to call this user?"
+		read new_username
+	fi
+#					2. YES -> Check if username exists. Does it exist already?
+	loop_count=0
+	while read x; do
+		loop_count=$((loop_count + 1))
+#							a. YES -> Fail with message and exit this script.
+		if [[ "$x" == *"$new_username"* ]]; then
+			echo "mkusr: User $new_username already exists!
+			mkusr: Exiting..."
+			exit 1;
+		fi
+	done < <(cat "$root_dir/system_files/config/users")
+#							b. NO	 -> Ask for new user's password
+	echo "Enter a password for $new_username ..."
+	read -s password
+#									1. Ask user to confirm new password
+	echo "Enter again to confirm..."
+	read -s password2
+#											A. Do both passwords match?
+	if [[ "$password" == "$password2" ]]; then
+#													1. YES -> does the password meet password strength requirements?
+		pass_length=${#password}
+		if (( $pass_length < 8 )); then
+			echo "mkusr: Password must be 8 characters or more!
+			mkusr: Exiting..."
+			exit 3
+		fi
+		spec_char=0
+		upper_char=0
+		lower_char=0
+		num_char=0
+		for (( i=0; i<${#password}; i++ )); do
+			num='^[0-9]+$'
+			low_char='[a-z]+$'
+			up_char='[A-Z]+$'
+			spc_char='['!'@#\$%^\&*()_+]'
+			if [[ ${password:$i:1} =~ $num ]]; then
+				num_char=$((num_char + 1))
+			elif [[ ${password:$i:1} =~ $low_char ]]; then
+				lower_char=$((lower_char + 1))
+			elif [[ ${password:$i:1} =~ $up_char ]]; then
+				upper_char=$((upper_char + 1))
+			elif [[ ${password:$i:1} =~ $spc_char ]]; then
+				spec_char=$((spec_char + 1))
+			else echo "'${password:$i:1}' is not allowed!"; exit 5
+			fi
+		done
+#															b. NO	 -> fail with message about password strength reqs.
+		if (( $spec_char < 2 )); then
+			echo "mkusr: Passwords must contain at least 2 special characters! mkusr: Exiting..."; exit 6
+			if (( $upper_char < 2 )); then
+				echo "mkusr: Passwords must contain at least 2 uppercase characters! mkusr: Exiting..."; exit 6
+				if (( $lower_char < 2 )); then
+					echo "mkusr: Passwords must contain at least 2 lowercase characters! mkusr: Exiting..."; exit 6
+					if (( $num_char < 2 )); then
+						echo "mkusr: Passwords must contain at least 2 numbers! mkusr: Exiting..."; exit 6
+					fi
+				fi
+			fi
+		fi
+#													2. Was the new user's group included in args?
+		if [ -z "$2" ]; then
+#															b. NO	 -> Ask the user what group this new user will belong to
+		echo "What group should this user belong to? power | general | intern"
+		read new_user_group
+		fi
+#															a. YES -> store the user's group
+#															c. Does the user group exist?
+		valid_user_group=0
+		if [[ "$new_user_group" == "power" ]]; then
+			valid_user_group=$(( valid_user_group + 1 ))
+		elif [[ "$new_user_group" == "general" ]]; then
+			valid_user_group=$(( valid_user_group + 1 ))
+		elif [[ "$new_user_group" == "intern" ]]; then
+			valid_user_group=$(( valid_user_group + 1 ))
+		fi
+#																			A. YES -> 1. store the user's group
+		if (( $valid_user_group == 0 )); then
+#																			B. NO	 -> 1. fail with message about group not existing.
+			echo "mkusr: $new_user_group is not a valid user group!
+			mkusr: Exiting..."
+			exit 7
+		elif (( $valid_user_group == 1 )); then
+#																								 2. append user's info to users file
+			echo "$new_username $password $new_user_group" >> "$root_dir/system_files/config/users"
+			echo "mkusr: $new_username has been added as a new user!
+			mkusr: Exiting..."
+		fi
+
+#											B. NO	 -> fail with message: "passwords do not match!"
+	else echo "mkusr: Passwords do not match! Exiting mkusr..."; exit 4
+	fi
+#					1. NO	 -> Fail with "permission denied"
+else echo "mkusr: Permission denied!"; exit 2
+fi

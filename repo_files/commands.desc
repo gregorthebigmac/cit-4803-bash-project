@@ -1,0 +1,18 @@
+list of commands the user may enter:
+  cmd 	| args											                        | description					          | Example
+--------|---------------------------------------------------|-------------------------------|--------------------------------------------------------
+chgpass | [username]	  						                        | change [username]'s password	| chgpass dsmith
+exit	  | N/A 											                        | quit shell  					        | exit
+mkfile	| [path/to/filename]				                        | create file 					        | mkfile sample.txt
+del		  | [path/to/filename]					                      | delete file					          | del sample.txt
+cd		  | [path/to/directory]					                      | change directory				      | cd /path/to/directory
+move	  | [input path/to/file] [output path/to/file]	      | move file			                | move /path/to/sample.txt /path/to/some_dir/sample.txt
+edit    | [filename]                                        | edit file (uses Nano backend) | nano path/to/dir/sample.txt
+mkusr   | [username]                                        | creates a new user            | mkusr dsmith
+delusr  | [username]                                        | deletes a user                | delusr dsmith
+search  | [criteria]                                        | find a file with [criteria]   | search "money"
+                                                            | or file contains [criteria]   | search "money.txt"
+
+Here we are defining (for OUR purposes, not for the users) what each command does, how it
+operates, and what it needs in order to execute properly. Should be pretty straightforward,
+but if you have any questions, ask me.

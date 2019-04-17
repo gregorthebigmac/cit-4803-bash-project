@@ -1,0 +1,4 @@
+# Roles	|	General Files	|	Project Files	|	Financial Files	| system_files
+power					r w d						r w d						r w d							r w d
+general				r w -						r w -						- - -							r - -
+intern				r w -						- - -						- - -							r - -
