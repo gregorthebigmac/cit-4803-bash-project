@@ -122,7 +122,7 @@ color c
 
 cls
 
-echo USERNAME doesn't exist.
+echo "USERNAME doesn't exist."
 
 pause >nul
 
@@ -144,7 +144,7 @@ color c
 
 cls
 
-echo The PASSWORD you entered is INVALID
+echo "The PASSWORD you entered is INVALID"
 
 pause >nul
 
@@ -156,9 +156,9 @@ color a
 
 cls
 
-echo You have Successfully logged in %user%
+echo "You have Successfully logged in %user%"
 
-echo Redirecting to home page...
+echo "Redirecting to home page..."
 
 ping localhost -n 7 >nul
 
@@ -194,13 +194,13 @@ goto passerror
 
 cls
 
-echo Are you sure you want to echo delete you account?
+echo "Are you sure you want to echo delete you account?"
 
 set /p "delacc=y/n: "
 
 if ["%delacc%"] == ["n"] goto home
 
-echo Deleting you account...
+echo "Deleting you account..."
 
 del "%duser%.bat"
 
@@ -210,9 +210,9 @@ cls
 
 color a
 
-echo Account deleted.
+echo "Account deleted."
 
-echo Redirecting to home
+echo "Redirecting to home"
 
 ping localhost -n 3 >nul
 
@@ -224,9 +224,9 @@ color c
 
 cls
 
-echo ERROR
+echo "ERROR"
 
-echo proceeding back to SIGNUP...
+echo "proceeding back to SIGNUP..."
 
 ping localhost -n 2 >nul
 
@@ -238,7 +238,7 @@ color c
 
 cls
 
-echo PASSWORD INVALID
+echo "PASSWORD INVALID"
 
 pause >nul
 
@@ -250,7 +250,7 @@ color c
 
 cls
 
-echo USERNAME doesn't exist.
+echo "USERNAME doesn't exist."
 
 pause >nul
 
