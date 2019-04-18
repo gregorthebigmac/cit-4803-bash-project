@@ -13,3 +13,4 @@
 #			a. YES	-> run main.sh
 #			b. NO	-> fail with message and run login.sh
 #		2. NO	-> fail with message and run login.sh
+echo "Now in login"

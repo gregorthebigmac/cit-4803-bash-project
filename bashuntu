@@ -1,10 +1,12 @@
 #!/bin/bash
+
 # This serves as the main entry point to the pseudo-shell.
 # Right off the bat, we grab the current working directory and write it to a config file called
 #	.root_dir that way every script can call it to figure out where it is in the *actual* file
 #	system, allowing us to not only know where *we* are, but where all the other files are, as well.
+
 root_dir=$(pwd)
-echo "$pwd" > $root_dir/system_files/config/.root_dir
+echo "$root_dir" > "$root_dir/system_files/config/.root_dir"
 
 set -o pipefail		# trace error through pipes
 set -o errtrace		# trace error through "time command" and other functions

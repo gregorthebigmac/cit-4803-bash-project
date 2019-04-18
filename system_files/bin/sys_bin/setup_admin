@@ -3,7 +3,7 @@
 # this is a one-time use script for initial setup of the admin account.
 # We're reading from the config file to get Bashuntu's root directory, so we know where we are in
 #	the *actual* file system.
-root_dir=$(awk 'NR == 1' ../../config/.root_dir)
+root_dir=$(awk 'NR == 1' system_files/config/.root_dir)
 current_dir=$(pwd)	# Used only for relative paths
 
 set -o pipefail		# trace error through pipes
@@ -61,8 +61,8 @@ while (( $user_is_valid == 0 )); do
 	else echo "Okay, try again."
 	fi
 done
-echo "Great! Your username is now $valid_user."
-echo "Now we need you to create a password for $valid_user."
+echo "Great! Your username is now $username_valid."
+echo "Now we need you to create a password for $username_valid."
 echo "Passwords MUST contain at least TWO lower case letters!"
 echo "Passwords MUST contain at least TWO upper case letters!"
 echo "Passwords MUST contain at least TWO numbers!"
@@ -138,4 +138,4 @@ done
 rm $root_dir/system_files/config/users
 mv $root_dir/system_files/config/temp_users $root_dir/system_files/config/users
 echo "[ok]"
-cat $root_dir/system_files/config/users
+#cat $root_dir/system_files/config/users
