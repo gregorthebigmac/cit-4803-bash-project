@@ -2,42 +2,40 @@
 
 # This script creates a new user in the "bashuntu" shell, provided the following checks pass:
 # 1. Does the user have permission to execute this command?
+
+# No longer using this method, but I'm leaving it in just in case we decide against it.
+#username=$(awk 'NR == 1' "$root_dir/system_files/config/.logged_in")
+
 root_dir=$(awk 'NR == 1' ../config/.root_dir)
-username=$(awk 'NR == 1' "$root_dir/system_files/config/.logged_in")
+username="$1"
+user_group="$2"
 password="password"
-new_username="$1"
-new_user_group="$2"
-#			A. ONLY users belonging to the group "power" may execute this script
-#			B. Is user a member of "power" ?
-if [ "$username" == "power" ] || [ "$username" == "dev" ]; then
-	if [ -z "$1" ]; then
+new_username="$3"
+new_user_group="$4"
+
+if [ "$user_group" == "power" ] || [ "$username" == "dev" ]; then		# don't forget to remove "dev"
+	if [ -z "$new_username" ]; then
 		echo "What would you like to call this user?"
 		read new_username
 	fi
-#					2. YES -> Check if username exists. Does it exist already?
 	loop_count=0
 	while read x; do
 		loop_count=$((loop_count + 1))
-#							a. YES -> Fail with message and exit this script.
-		if [[ "$x" == *"$new_username"* ]]; then
-			echo "mkusr: User $new_username already exists!
-			mkusr: Exiting..."
+		if [[ "$x" == *"$new_username"* ]]; then	# this will give false positives (e.g. "ken" will give false positive for "kenny")
+			echo "mkusr: User $new_username already exists!"
+			echo "mkusr: Exiting..."
 			exit 1;
 		fi
 	done < <(cat "$root_dir/system_files/config/users")
-#							b. NO	 -> Ask for new user's password
 	echo "Enter a password for $new_username ..."
 	read -s password
-#									1. Ask user to confirm new password
 	echo "Enter again to confirm..."
 	read -s password2
-#											A. Do both passwords match?
 	if [[ "$password" == "$password2" ]]; then
-#													1. YES -> does the password meet password strength requirements?
 		pass_length=${#password}
 		if (( $pass_length < 8 )); then
-			echo "mkusr: Password must be 8 characters or more!
-			mkusr: Exiting..."
+			echo "mkusr: Password must be 8 characters or more!"
+			echo "mkusr: Exiting..."
 			exit 3
 		fi
 		spec_char=0
@@ -57,30 +55,29 @@ if [ "$username" == "power" ] || [ "$username" == "dev" ]; then
 				upper_char=$((upper_char + 1))
 			elif [[ ${password:$i:1} =~ $spc_char ]]; then
 				spec_char=$((spec_char + 1))
-			else echo "'${password:$i:1}' is not allowed!"; exit 5
+			else echo "'${password:$i:1}' is not allowed!"; echo "mkusr: Exiting..."; exit 5
 			fi
 		done
-#															b. NO	 -> fail with message about password strength reqs.
 		if (( $spec_char < 2 )); then
-			echo "mkusr: Passwords must contain at least 2 special characters! mkusr: Exiting..."; exit 6
+			echo "mkusr: Passwords must contain at least 2 special characters!"
+			echo "mkusr: Exiting..."; exit 6
 			if (( $upper_char < 2 )); then
-				echo "mkusr: Passwords must contain at least 2 uppercase characters! mkusr: Exiting..."; exit 6
+				echo "mkusr: Passwords must contain at least 2 uppercase characters!"
+				echo "mkusr: Exiting..."; exit 6
 				if (( $lower_char < 2 )); then
-					echo "mkusr: Passwords must contain at least 2 lowercase characters! mkusr: Exiting..."; exit 6
+					echo "mkusr: Passwords must contain at least 2 lowercase characters!"
+					echo "mkusr: Exiting..."; exit 6
 					if (( $num_char < 2 )); then
-						echo "mkusr: Passwords must contain at least 2 numbers! mkusr: Exiting..."; exit 6
+						echo "mkusr: Passwords must contain at least 2 numbers!"
+						echo "mkusr: Exiting..."; exit 6
 					fi
 				fi
 			fi
 		fi
-#													2. Was the new user's group included in args?
-		if [ -z "$2" ]; then
-#															b. NO	 -> Ask the user what group this new user will belong to
+		if [ -z "$new_user_group" ]; then
 		echo "What group should this user belong to? power | general | intern"
 		read new_user_group
 		fi
-#															a. YES -> store the user's group
-#															c. Does the user group exist?
 		valid_user_group=0
 		if [[ "$new_user_group" == "power" ]]; then
 			valid_user_group=$(( valid_user_group + 1 ))
@@ -89,22 +86,17 @@ if [ "$username" == "power" ] || [ "$username" == "dev" ]; then
 		elif [[ "$new_user_group" == "intern" ]]; then
 			valid_user_group=$(( valid_user_group + 1 ))
 		fi
-#																			A. YES -> 1. store the user's group
 		if (( $valid_user_group == 0 )); then
-#																			B. NO	 -> 1. fail with message about group not existing.
-			echo "mkusr: $new_user_group is not a valid user group!
-			mkusr: Exiting..."
+			echo "mkusr: $new_user_group is not a valid user group!"
+			echo "mkusr: Exiting..."
 			exit 7
 		elif (( $valid_user_group == 1 )); then
-#																								 2. append user's info to users file
 			echo "$new_username $password $new_user_group" >> "$root_dir/system_files/config/users"
 			echo "mkusr: $new_username has been added as a new user!
 			mkusr: Exiting..."
+		else echo "mkusr: $new_user_group is not a valid user group!"; echo "mkusr: Exiting..." exit 7
 		fi
-
-#											B. NO	 -> fail with message: "passwords do not match!"
 	else echo "mkusr: Passwords do not match! Exiting mkusr..."; exit 4
 	fi
-#					1. NO	 -> Fail with "permission denied"
 else echo "mkusr: Permission denied!"; exit 2
 fi

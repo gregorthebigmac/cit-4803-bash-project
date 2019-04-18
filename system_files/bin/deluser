@@ -2,4 +2,25 @@
 
 # This script will check if the user is admin. If they are NOT admin, they cannot delete users.
 
-# THIS NEEDS TO BE MORE FLESHED OUT LATER!!
+root_dir=$(awk 'NR == 1' ../config/.root_dir)
+username="$1"		# the user currently logged in and running this script.
+user_group="$2"	# the group the currently logged in user belongs to.
+user_to_del="$3"	# optional
+user_to_del_group="$4"	# optional
+
+if [ "$user_group" == "power" ] || [ "$username" == "dev" ]; then		# don't forget to remove "dev"
+	if [ -z "$new_username" ]; then
+		echo "Which user do you want to remove?"
+		read user_to_del
+	fi
+	loop_count=0
+	users_from_file=()
+	while read line_file; do
+		loop_count=$((loop_count + 1))
+		users_from_file+=$line_file
+		for index in "${users_from_file[@]}"; do
+			echo "index = $index"
+		done
+		#if [[ "$x" == "user_to_del"]]
+	done < <(cat "$root_dir/system_files/bin/users")
+fi
