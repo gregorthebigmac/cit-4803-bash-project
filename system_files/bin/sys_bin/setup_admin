@@ -138,4 +138,3 @@ done
 rm $root_dir/system_files/config/users
 mv $root_dir/system_files/config/temp_users $root_dir/system_files/config/users
 echo "[ok]"
-#cat $root_dir/system_files/config/users
