@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # this is a one-time use script for initial setup of the admin account.
-# we use $root_dir to establish the root directory of our script in the *actual* file system so we
-#	can find not just ourselves, but everything else within the Bashuntu shell.
-root_dir=""
+# We're reading from the config file to get Bashuntu's root directory, so we know where we are in
+#	the *actual* file system.
+root_dir=$(awk 'NR == 1' ../../config/.root_dir)
 current_dir=$(pwd)	# Used only for relative paths
 
 set -o pipefail		# trace error through pipes

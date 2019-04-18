@@ -1,9 +1,10 @@
 #!/bin/bash
 # This serves as the main entry point to the pseudo-shell.
-# I think we're going to start passing the root_dir as the first arg in every script to keep
-# 	track of our location in the *actual* file system as we move about
-
+# Right off the bat, we grab the current working directory and write it to a config file called
+#	.root_dir that way every script can call it to figure out where it is in the *actual* file
+#	system, allowing us to not only know where *we* are, but where all the other files are, as well.
 root_dir=$(pwd)
+echo "$pwd" > $root_dir/system_files/config/.root_dir
 
 set -o pipefail		# trace error through pipes
 set -o errtrace		# trace error through "time command" and other functions
@@ -25,14 +26,14 @@ if does_admin_account_exist=$(cat $root_dir/system_files/config/users | grep "ad
 	if [[ $does_admin_account_exist == *"admin"* ]]; then
 		echo "[ok]"
 		echo "WARNING! Admin account has not been setup yet! Creating Admin account now..."
-		if $root_dir/system_files/bin/sys_bin/setup_admin -r $root_dir; then
+		if $root_dir/system_files/bin/sys_bin/setup_admin; then
 			echo "Proceeding to login screen..."
-			$root_dir/system_files/bin/sys_bin/login -r $root_dir
+			$root_dir/system_files/bin/sys_bin/login
 		else trap 'error ${LINENO} ${?}' ERR
 		fi
 	else
 		echo "Proceeding to login screen..."
-		$root_dir/system_files/bin/sys_bin/login -r	$root_dir
+		$root_dir/system_files/bin/sys_bin/login
 	fi
 else trap 'error ${LINENO} ${?}' ERR
 fi
