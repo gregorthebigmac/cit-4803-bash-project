@@ -1,9 +1,9 @@
-cd cd
-chgpass -
-del rm
-deluser -
-edit nano
-mkfile touch
-mkusr -
-move mv
-search find cat | grep
+cd
+chgpass
+del
+deluser
+edit
+mkfile
+mkusr
+move
+search
