@@ -14,10 +14,12 @@
 #			b. NO	-> fail with message and run login.sh
 #		2. NO	-> fail with message and run login.sh
 
-tput reset
+tput reset #clears terminal
+
 echo "----------------------------------------"
 echo "         Welcome to Bashuntu"
 echo "      The Shell Within a Shell!"
 echo "                           'yo, dawg...'"
 echo "----------------------------------------"
-echo ""
+
+cat "$root_dir/system_files/config/yo_dawg.art"
