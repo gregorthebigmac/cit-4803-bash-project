@@ -2,6 +2,8 @@
 
 # this is a one-time use script for initial setup of the admin account.
 
+root_dir=$(pwd)		# we execute this first to establish where we are in the *actual* file system
+
 set -o pipefail		# trace error through pipes
 set -o errtrace		# trace error through "time command" and other functions
 
@@ -13,11 +15,11 @@ error() {
 	job="$0"
 	last_line="$1"
 	last_error="$2"
-	echo "ERROR in ${job} : line ${last_line} with exit code ${last_error}"
+	date_time=$(date +"%Y-%m-%d %T")
+	echo "ERROR in ${job} : line ${last_line} with exit code ${last_error}" >> "$root_dir/file_system/logs/errors/$date_time.log"
 	exit 1
 }
 
-root_dir=$(pwd)
 
 user_is_valid=0
 password_is_valid=0
@@ -68,6 +70,8 @@ while (( $password_is_valid == 0 )); do
 	upper_char=0
 	lower_char=0
 	num_char=0
+	disallowed=0
+	disallowed_char=""
 	if [[ "$password" == "$password2" ]]; then
 		pass_length=${#password}
 		if (( $pass_length < 8 )); then
@@ -79,47 +83,53 @@ while (( $password_is_valid == 0 )); do
 			up_char='[A-Z]+$'
 			spc_char='['!'@#\$%^\&*()_+]'
 			if [[ ${password:$i:1} =~ $num ]]; then
-				echo "found a number!"
-				num_char=$(( num_char=num_char+1 ))
+				num_char=$((num_char + 1))
 			elif [[ ${password:$i:1} =~ $low_char ]]; then
-				echo "found a lower case character!"
-				lower_char=$(( lower_char=lower_char+1 ))
+				lower_char=$((lower_char + 1))
 			elif [[ ${password:$i:1} =~ $up_char ]]; then
-				echo "found an upper case character!"
-				upper_char=$(( upper_char=upper_char+1 ))
+				upper_char=$((upper_char + 1))
 			elif [[ ${password:$i:1} =~ $spc_char ]]; then
-				echo "found a special character!"
-				spec_char=$(( spec_char=spec_char+1 ))
-			else echo "'${password:$i:1}' is not allowed!"
+				spec_char=$((spec_char + 1))
+			else
+				disallowed_char=${password:$i:1}
+				disallowed=$((disallowed + 1))
 			fi
 		done
-		if (( $spec_char > 1 )); then
-			if (( $upper_char > 1 )); then
-				if (( $lower_char > 1 )); then
-					if (( $num_char > 1 )); then
-						(( password_is_valid=password_is_valid+1 ))
-						password_valid=$password
-					else echo "mkusr: Passwords must contain at least 2 numbers!"
+		if (( $disallowed == 0 )); then
+			if (( $spec_char > 1 )); then
+				if (( $upper_char > 1 )); then
+					if (( $lower_char > 1 )); then
+						if (( $num_char > 1 )); then
+							password_is_valid=$((password_is_valid + 1))
+							password_valid=$password
+						else echo "mkusr: Passwords must contain at least 2 numbers!"
+						fi
+					else echo "mkusr: Passwords must contain at least 2 lowercase characters!"
 					fi
-				else echo "mkusr: Passwords must contain at least 2 lowercase characters!"
+				else echo "mkusr: Passwords must contain at least 2 uppercase characters!"
 				fi
-			else echo "mkusr: Passwords must contain at least 2 uppercase characters!"
+			else echo "mkusr: Passwords must contain at least 2 special characters!"
 			fi
-		else echo "mkusr: Passwords must contain at least 2 special characters!"
+		else echo "mkusr: '$disallowed_char' is not allowed in your password. Try again."
 		fi
 	fi
 done
-echo -n "Your credentials are being stored..."
-#echo "$username_valid $password_valid power" >> "$root_dir/system_files/config/users"
+echo "Username and Password are valid, proceeding to register new user..."
 final_user_pass="$username_valid $password_valid power"
-echo -n "Reading file..."
-file_content=$(cat $root_dir/system_files/config/users)
+echo -n "Removing 'admin' from registered users..."
+output_test_file=()
+while read x; do
+	if [[ "$x" == *"admin"* ]]; then
+		output_test_file+=("$final_user_pass")
+	else output_test_file+=("$x")
+	fi
+done < <(cat $root_dir/system_files/config/users)
 echo "[ok]"
-for i in "${file_content[@]}"; do
-	echo "$i"
+echo -n "Registering new user $username_valid..."
+for x in "${!output_test_file[@]}";do
+	echo "${output_test_file[$x]}" >> $root_dir/system_files/config/temp_users
 done
-echo "File content read."
-
-#	c. store permissions (basically ALL is permitted for admin)
+rm $root_dir/system_files/config/users
+mv $root_dir/system_files/config/temp_users $root_dir/system_files/config/users
 echo "[ok]"
-# 4. run main.sh
+cat $root_dir/system_files/config/users
