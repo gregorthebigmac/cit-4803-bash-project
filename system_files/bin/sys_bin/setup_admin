@@ -1,8 +1,10 @@
 #!/bin/bash
 
 # this is a one-time use script for initial setup of the admin account.
-
-root_dir=$(pwd)		# we execute this first to establish where we are in the *actual* file system
+# we use $root_dir to establish the root directory of our script in the *actual* file system so we
+#	can find not just ourselves, but everything else within the Bashuntu shell.
+root_dir=""
+current_dir=$(pwd)	# Used only for relative paths
 
 set -o pipefail		# trace error through pipes
 set -o errtrace		# trace error through "time command" and other functions
@@ -11,7 +13,6 @@ set -o errtrace		# trace error through "time command" and other functions
 	# The syntax for calling this to correctly output errors is:
 	# trap 'error ${LINENO} ${?}' ERR
 error() {
-	# TODO: Add error logging to a file that EVERYONE can read (not just power user)
 	job="$0"
 	last_line="$1"
 	last_error="$2"
@@ -20,6 +21,13 @@ error() {
 	exit 1
 }
 
+# Get args, like root_dir
+while getopts ':r:' OPTION; do
+	case $OPTION in
+		r) root_dir="$OPTARG"
+		   ;;
+	esac
+done
 
 user_is_valid=0
 password_is_valid=0
@@ -33,9 +41,7 @@ while (( $user_is_valid == 0 )); do
 	echo "You put $temp_user. Is this correct? y/n"
 	read confirm
 	if [ $confirm == "y" ] || [ $confirm == "Y" ]; then
-		# 1a. It CANNOT be "admin" or "root" or "user"
-		# 1b. It CANNOT contain spaces or special characters
-		pattern=" |'"
+		pattern=" |'"	# This is how we find spaces in the username
 		if [[ $temp_user =~ [A-Z] ]]; then
 			echo "You entered $temp_user. Usernames CANNOT contain uppercase letters. Try again."
 		elif [[ $temp_user =~ $pattern ]]; then
