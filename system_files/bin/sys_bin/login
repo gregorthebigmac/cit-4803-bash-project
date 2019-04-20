@@ -73,4 +73,8 @@ while (( login_check == 0)); do
 	else echo "Username and password not found!"
 	fi
 done
+echo "Successfully logged in as $username. Welcome back."
+echo ""
+echo "For a list of commands, type \"help\""
+tput reset
 . ./system_files/bin/sys_bin/main

@@ -4,4 +4,12 @@
 # In the backend, this runs:
 # $ cd [path/to/dir]
 
-echo "correctly called [cd]"
+while getopts :h: option; do
+	echo "inside parsing getopts..."
+	case ${option} in
+		[h\?]) 	echo "Usage: cd [path/to/directory]"
+				echo "            or"
+				echo "       cd [directory]"
+		  ;;
+	esac
+done
