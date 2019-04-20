@@ -14,4 +14,16 @@
 #		2. NO	-> Fail with message "[command] not found."
 #	b. continue main_loop()
 
+red=`tput setaf 1`
+green=`tput setaf 2`
+cyan=`tput setaf 6`
+reset=`tput sgr0`
+bold=`tput bold`
+
+echo "${bold}${red}red text ${green}green text${reset}"
+
 echo "Now in main..."
+
+echo "Successfully logged in as $username. Welcome back."
+echo ""
+echo "$username@$(hostname):/$"
