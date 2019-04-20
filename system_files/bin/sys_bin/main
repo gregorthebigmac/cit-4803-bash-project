@@ -13,3 +13,5 @@
 #			b. NO	-> Fail with [command] usage page (see commands.txt)
 #		2. NO	-> Fail with message "[command] not found."
 #	b. continue main_loop()
+
+echo "Now in main..."
