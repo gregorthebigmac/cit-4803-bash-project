@@ -17,3 +17,5 @@
 # Alternatively, if no [option] is specified, it is assumed you want to
 # change your own password, and will prompt for and validate your own (current)
 # password before asking you to enter your new password.
+
+echo "correctly called [chgpass]"

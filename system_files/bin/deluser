@@ -2,6 +2,8 @@
 
 # This script will check if the user is admin. If they are NOT admin, they cannot delete users.
 
+echo "entering [delusr]"
+
 root_dir=$(awk 'NR == 1' ../config/.root_dir)
 username="$1"		# the user currently logged in and running this script.
 user_group="$2"	# the group the currently logged in user belongs to.

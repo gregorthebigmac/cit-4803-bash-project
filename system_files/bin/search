@@ -6,3 +6,5 @@
 # (meaning the user is NOT allowed to see the output from the grep results), and
 # parse the data returned from grep themselves IN the script and check THAT against
 # permissions.sh and return ONLY what the user is allowed to see based on that.
+
+echo "correctly called [search]"

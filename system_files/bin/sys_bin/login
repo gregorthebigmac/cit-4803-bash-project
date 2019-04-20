@@ -36,9 +36,9 @@ while (( login_check == 0)); do
 	user_loop_counter=0
 	pass_loop_counter=0
 	while read users; do
-		echo "username = $username"
-		echo "password = $password"
-		echo "users = $users"
+		#echo "username = $username"
+		#echo "password = $password"
+		#echo "users = $users"
 		if [[ "$users" == *"$username"* ]]; then
 			#echo "Found a username substring match!"
 			if [[ "$users" == *"$password"* ]]; then

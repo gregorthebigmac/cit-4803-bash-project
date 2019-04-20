@@ -6,6 +6,8 @@
 # No longer using this method, but I'm leaving it in just in case we decide against it.
 #username=$(awk 'NR == 1' "$root_dir/system_files/config/.logged_in")
 
+echo "entering [mkusr]"
+
 root_dir=$(awk 'NR == 1' ../config/.root_dir)
 username="$1"
 user_group="$2"
