@@ -14,16 +14,22 @@
 #		2. NO	-> Fail with message "[command] not found."
 #	b. continue main_loop()
 
+echo "Now in main..."
+
 red=`tput setaf 1`
 green=`tput setaf 2`
 cyan=`tput setaf 6`
 reset=`tput sgr0`
 bold=`tput bold`
 
-echo "${bold}${red}red text ${green}green text${reset}"
-
-echo "Now in main..."
+shell_dir="/"
+current_dir="$root_dir/file_system"
+user_command=""
 
 echo "Successfully logged in as $username. Welcome back."
 echo ""
-echo "$username@$(hostname):/$"
+echo "For a list of commands, type \"help\""
+while [[ $user_command != "exit" ]]; do
+	echo -n "${bold}${green}[$username${reset}${bold}@${red}$(hostname)${reset}${bold} $shell_dir]$ ${reset}"
+	read user_command
+done
