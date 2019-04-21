@@ -3,6 +3,7 @@ chgpass
 del
 deluser
 edit
+list
 mkfile
 mkusr
 move

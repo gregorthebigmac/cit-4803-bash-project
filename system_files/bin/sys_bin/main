@@ -40,6 +40,8 @@ while [[ "$user_command" != "exit" ]]; do
 			elif [[ "$cmd" == "edit" ]]; then
 				./system_files/bin/$user_command
 				break
+			elif [[ "$cmd" == "list" ]]; then
+				./system_files/bin/$user_command
 			elif [[ "$cmd" == "mkfile" ]]; then
 				./system_files/bin/$user_command
 				break

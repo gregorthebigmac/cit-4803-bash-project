@@ -19,7 +19,7 @@ while getopts i:h option; do
 done
 
 if [[ "$destination_dir" == ".." ]]; then
-	# TODO: FIGURE OUT HOW TO GO UP ONE LEVEL!!!!!!!!!
+	echo "can't go up one level yet"
 fi
 
 permissions=()
