@@ -1,1 +1,11 @@
-ERROR in ./system_files/bin/cd : line cd: 46: : at date-time 2019-04-21  : with exit code 23: stuff: No such directory!
+2019-04-21 01:42:24: ERROR in ./system_files/bin/cd : line cd: 27: : with exit code 23: general_files: No such directory!
+2019-04-21 01:44:01: ERROR in ./system_files/bin/cd : line cd: 27: : with exit code 23: -h: No such directory!
+2019-04-21 01:45:38: ERROR in ./system_files/bin/cd : line cd: 28: : with exit code 23: general_files: No such directory!
+2019-04-21 01:48:22: ERROR in ./system_files/bin/cd : line cd: 28: : with exit code 23: general_files: No such directory!
+2019-04-21 01:52:43: ERROR in ./system_files/bin/cd : line cd: 35: : with exit code 23: general_files: No such directory!
+2019-04-21 01:53:56: ERROR in ./system_files/bin/cd : line cd: 35: : with exit code 23: general_files: No such directory!
+2019-04-21 02:40:59: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
+2019-04-21 02:41:20: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
+2019-04-21 02:44:23: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
+2019-04-21 02:45:28: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
+2019-04-21 02:47:48: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: stuff: No such directory!

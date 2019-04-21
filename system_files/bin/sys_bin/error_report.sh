@@ -11,11 +11,10 @@ error() {
 	last_line="$1"
 	last_error="$2"
 	date_d=$(date +"%Y-%m-%d")
-	time_t=$(date+"%T")
+	time_t=$(date +"%T")
 	error_file="$root_dir/file_system/log/errors/$date_d.log"
-	if test -f "$error_file"; then
-		echo ""
-	else touch "$error_file"
+	if [ ! -f "$error_file" ]; then
+		touch "$error_file"
 	fi
 	echo "$date_d $time_t: ERROR in ${job} : line ${last_line} : with exit code ${last_error}" >> "$error_file"	
 }

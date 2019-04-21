@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Usage: cd [path/to/directory]"
-echo "          or
-             cd [directory]"
+echo "          or"
+echo "       cd [directory]"
 echo "Examples:"
 echo "$ cd general_files        This will bring you to the directory \"/general_files\" if you are currently in the root directory, /"
 echo ""

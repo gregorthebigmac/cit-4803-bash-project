@@ -11,8 +11,8 @@ reset=`tput sgr0`
 bold=`tput bold`
 # end of text formatting stuff
 
-export shell_dir="/"
-export current_dir="$root_dir/file_system"
+shell_dir="$(cat "$root_dir/system_files/bin/sys_bin/.current_dir")"
+export current_dir="$root_dir/file_system/"
 user_command=""
 
 echo "Successfully logged in as $username. Welcome back."
@@ -20,6 +20,7 @@ echo ""
 echo "For a list of commands, type \"help\""
 
 while [[ "$user_command" != "exit" ]]; do
+	shell_dir="$(cat "$root_dir/system_files/bin/sys_bin/.current_dir")"
 	echo -n "${bold}${green}$username${reset}${bold}@${blue}$(hostname)${reset}:${cyan}${bold} $shell_dir$ ${reset}"
 	read user_command
 	if [[ "$user_command" != "exit" ]]; then

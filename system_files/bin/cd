@@ -1,28 +1,43 @@
 #!/bin/bash
 
+source $root_dir/system_files/bin/sys_bin/error_report.sh
+shell_dir="$(cat $root_dir/system_files/bin/sys_bin/.current_dir)"
 destination_dir=""
 
 if [ -z "$1" ]; then
 	echo "cd: no directory or path specified."
 	$root_dir/system_files/bin/cd.help
+	exit 1
 else destination_dir="$1"
 fi
 
 while getopts i:h option; do
 	case ${option} in
 		h) 	$root_dir/system_files/bin/cd.help
-		;;
+			exit 1;;
 	esac
 done
 
+if [[ "$destination_dir" == ".." ]]; then
+	# TODO: FIGURE OUT HOW TO GO UP ONE LEVEL!!!!!!!!!
+fi
+
 permissions=()
 list=$(ls $current_dir)
+found_dir=0
 for x in $list; do
 	if [[ "$destination_dir" == "$x" ]]; then
 		echo "Found destination dir"
-	else
-		echo "cd: $destination_dir: No such directory!"
-		error "cd: ${LINENO}:" "23: $destination_dir: No such directory!"
+		found_dir=$((found_dir + 1))
 		break
 	fi
 done
+if (( found_dir == 1 )); then
+	new_dir="$shell_dir$destination_dir/"
+	echo "new dir = $new_dir"
+	shell_dir="$new_dir"
+	echo -n "$shell_dir" > "$root_dir/system_files/bin/sys_bin/.current_dir"
+else
+	echo "cd: $destination_dir: No such directory!"
+	error "cd: ${LINENO}:" "23: $destination_dir: No such directory!"
+fi
