@@ -1,45 +1,23 @@
 #!/bin/bash
 
-# This will serve as the main loop of the script
+source $root_dir/system_files/bin/sys_bin/error_report.sh
 
-# High level description:
-# 1. main_loop()
-#	a. Get user command and args. Is command valid?
-#		1. YES	-> Check args. Are they valid?
-#			a. YES	-> Check permissions. Does the user have permissions to perform the action?
-#				1. YES	-> Run command and args (see commands.txt for descriptions)
-#				2. NO	-> Fail with "access denied" message.
-#			b. NO	-> Fail with [command] usage page (see commands.txt)
-#		2. NO	-> Fail with message "[command] not found."
-#	b. continue main_loop()
-
-set -o pipefail		# trace error through pipes
-set -o errtrace		# trace error through "time command" and other functions
-
-# Function for catching and printing errors through pipes
-	# The syntax for calling this to correctly output errors is:
-	# trap 'error ${LINENO} ${?}' ERR
-error() {
-	job="$0"
-	last_line="$1"
-	last_error="$2"
-	date_time=$(date +"%Y-%m-%d %T")
-	echo "ERROR in ${job} : line ${last_line} with exit code ${last_error}" >> "$root_dir/file_system/logs/errors/$date_time.log"
-	exit 1
-}
-
-echo "Now in main..."
-
+# text formatting stuff
 red=`tput setaf 1`
 blue=`tput setaf 4`
 green=`tput setaf 2`
 cyan=`tput setaf 6`
 reset=`tput sgr0`
 bold=`tput bold`
+# end of text formatting stuff
 
-shell_dir="/"
-current_dir="$root_dir/file_system"
+export shell_dir="/"
+export current_dir="$root_dir/file_system"
 user_command=""
+
+echo "Successfully logged in as $username. Welcome back."
+echo ""
+echo "For a list of commands, type \"help\""
 
 while [[ "$user_command" != "exit" ]]; do
 	echo -n "${bold}${green}$username${reset}${bold}@${blue}$(hostname)${reset}:${cyan}${bold} $shell_dir$ ${reset}"
@@ -47,39 +25,38 @@ while [[ "$user_command" != "exit" ]]; do
 	if [[ "$user_command" != "exit" ]]; then
 		for cmd in $user_command; do
 			if [[ "$cmd" == "cd" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "chgpass" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "del" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "delusr" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "edit" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "mkfile" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "mkusr" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "move" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "search" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "errors" ]]; then
-				. ./system_files/bin/$user_command
+				./system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "help" ]]; then
 				echo "The following commands may be used from the terminal at any point in time."
-				echo "For specific help on the usage of any of these commands, type:"
-				echo "[command] -h"
+				echo "For specific help on the usage of any of these commands, type: [command] -h"
 				echo ""
 				cat $root_dir/system_files/config/commands
 			else echo "$user_command: Not found! For a list of commands, type \"help\""

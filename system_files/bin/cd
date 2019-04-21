@@ -1,15 +1,28 @@
 #!/bin/bash
 
-# this will check if the user has permission to see the directory contents before allowing them to change into the directory specified.
-# In the backend, this runs:
-# $ cd [path/to/dir]
+destination_dir=""
 
-while getopts :h: option; do
-	echo "inside parsing getopts..."
+if [ -z "$1" ]; then
+	echo "cd: no directory or path specified."
+	$root_dir/system_files/bin/cd.help
+else destination_dir="$1"
+fi
+
+while getopts i:h option; do
 	case ${option} in
-		[h\?]) 	echo "Usage: cd [path/to/directory]"
-				echo "            or"
-				echo "       cd [directory]"
-		  ;;
+		h) 	$root_dir/system_files/bin/cd.help
+		;;
 	esac
+done
+
+permissions=()
+list=$(ls $current_dir)
+for x in $list; do
+	if [[ "$destination_dir" == "$x" ]]; then
+		echo "Found destination dir"
+	else
+		echo "cd: $destination_dir: No such directory!"
+		error "cd: ${LINENO}:" "23: $destination_dir: No such directory!"
+		break
+	fi
 done

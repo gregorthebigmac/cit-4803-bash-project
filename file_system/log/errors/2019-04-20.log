@@ -1,0 +1,2 @@
+ERROR in ./system_files/bin/cd : line cd: 46: : at date-time 2019-04-20  : with exit code 23: stuff: No such directory!
+ERROR in ./system_files/bin/cd : line cd: 46: : at date-time 2019-04-20  : with exit code 23: stuff2: No such directory!

@@ -5,23 +5,8 @@
 #	.root_dir that way every script can call it to figure out where it is in the *actual* file
 #	system, allowing us to not only know where *we* are, but where all the other files are, as well.
 
-root_dir=$(pwd)
-#echo "$root_dir" > "$root_dir/system_files/config/.root_dir"
-
-set -o pipefail		# trace error through pipes
-set -o errtrace		# trace error through "time command" and other functions
-
-# Function for catching and printing errors through pipes
-	# The syntax for calling this to correctly output errors is:
-	# trap 'error ${LINENO} ${?}' ERR
-error() {
-	job="$0"
-	last_line="$1"
-	last_error="$2"
-	date_time=$(date +"%Y-%m-%d %T")
-	echo "ERROR in ${job} : line ${last_line} with exit code ${last_error}" >> "$root_dir/file_system/logs/errors/$date_time.log"
-	exit 1
-}
+export root_dir=$(pwd)
+source $root_dir/system_files/bin/sys_bin/error_report.sh
 
 echo -n "Initializing shell..."
 if does_admin_account_exist=$(cat $root_dir/system_files/config/users | grep "admin"); then
@@ -31,7 +16,7 @@ if does_admin_account_exist=$(cat $root_dir/system_files/config/users | grep "ad
 		if . ./system_files/bin/sys_bin/setup_admin; then
 			echo "Proceeding to login screen..."
 			. ./system_files/bin/sys_bin/login
-		else trap 'error ${LINENO} ${?}' ERR
+		else error "${0}: ${LINENO}: " "Failed to execute!"
 		fi
 	else
 		echo "Proceeding to login screen..."
