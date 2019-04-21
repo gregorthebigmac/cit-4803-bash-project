@@ -9,3 +9,4 @@
 2019-04-21 02:44:23: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
 2019-04-21 02:45:28: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: general_files: No such directory!
 2019-04-21 02:47:48: ERROR in ./system_files/bin/cd : line cd: 38: : with exit code 23: stuff: No such directory!
+2019-04-21 10:21:32: ERROR in ./system_files/bin/cd : line cd: 42: : with exit code 23: ..: No such directory!
