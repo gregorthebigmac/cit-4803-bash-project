@@ -12,7 +12,7 @@ get_shell_dir() {
 				root_dir_ctr=$((root_dir_ctr + 1))
 				this_dir="/"
 			fi
-		else this_dir="$this_dir/$i"
+		else this_dir="$this_dir$i"
 		fi
 	done
 	echo -n "$this_dir"

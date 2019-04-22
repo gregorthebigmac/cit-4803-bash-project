@@ -1,7 +1,11 @@
 #!/bin/bash
 
+# shellcheck source=src/system_files/bin/sys_bin/error_report.sh
 source $root_dir/system_files/bin/sys_bin/error_report.sh
+# shellcheck source=src/system_files/bin/sys_bin/get_dir.sh
 source $root_dir/system_files/bin/sys_bin/get_dir.sh
+
+#cat "$root_dir/system_files/bin/sys_bin/error_report.sh"
 
 # text formatting stuff
 red=`tput setaf 1`
@@ -12,9 +16,8 @@ reset=`tput sgr0`
 bold=`tput bold`
 # end of text formatting stuff
 
-export current_dir="$root_dir/file_system/"
-echo "$current_dir" > "$root_dir/system_files/bin/sys_bin/.current_dir"
-
+export current_dir="$root_dir/file_system"
+cd $current_dir
 user_command=""
 
 echo "Successfully logged in as $username. Welcome back."
@@ -22,43 +25,43 @@ echo ""
 echo "For a list of commands, type \"help\""
 
 while [[ "$user_command" != "exit" ]]; do
-	shell_dir="$(cat "$root_dir/system_files/bin/sys_bin/.current_dir")"
-	echo -n "${bold}${green}$username${reset}${bold}@${blue}$(hostname)${reset}:${cyan}${bold} $(get_shell_dir)$ ${reset}"
+	echo -n "$current_dir" > "$root_dir/system_files/bin/sys_bin/.current_dir"
+	echo -n "${bold}${green}$username${reset}${bold}@${blue}$(hostname)${reset}:${cyan}${bold} $(get_shell_dir)${reset}$ "
 	read user_command
 	if [[ "$user_command" != "exit" ]]; then
 		for cmd in $user_command; do
 			if [[ "$cmd" == "cd" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "chgpass" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "del" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "delusr" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "edit" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "list" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/list
 				break
 			elif [[ "$cmd" == "mkfile" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "mkusr" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "move" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "search" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "errors" ]]; then
-				./system_files/bin/$user_command
+				. $root_dir/system_files/bin/$user_command
 				break
 			elif [[ "$cmd" == "help" ]]; then
 				echo "The following commands may be used from the terminal at any point in time."

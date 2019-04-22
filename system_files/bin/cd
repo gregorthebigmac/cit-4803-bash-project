@@ -1,22 +1,20 @@
 #!/bin/bash
 
+# shellcheck source=./system_files/bin/sys_bin/error_report.sh
 source $root_dir/system_files/bin/sys_bin/error_report.sh
+# shellcheck source=./system_files/bin/sys_bin/get_dir.sh
 source $root_dir/system_files/bin/sys_bin/get_dir.sh
-destination_dir=""
-echo "where to?"
-list="$(./system_files/bin/list)"
-echo "$list"
-#IFS='\n'
-#read -ra ADDR <<< "$list"
-read user_choice
-valid_choice=0
-for i in $list; do
-	if [[ "$i" == "$user_choice" ]]; then
-		valid_choice=$((valid_choice + 1))
-		echo -n "$(pwd)/$user_choice" > "$root_dir/system_files/bin/sys_bin/.current_dir"
-		cd "$user_choice"
+
+destination_dir="$1"
+
+if cd $destination_dir; then
+	this_path=$(pwd)
+	this_dir="$(basename $this_path)"
+	permissions_file="$(cat ".$this_dir")"
+	if [[ "$permissions_file" == "root" ]]; then
+		echo "cd: not allowed! Already at root of file system!"
+		cd $root_dir/file_system
+	else current_dir=$(pwd)
 	fi
-done
-if ((valid_choice == 0)); then
-	echo "$user_choice: Not a directory!"
+else echo "cd: $destination_dir doesn't exist!"
 fi
