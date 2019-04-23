@@ -2,29 +2,37 @@
 
 # This script will check if the user is admin. If they are NOT admin, they cannot delete users.
 
-if [[ "$group" == "power" ]]; then
-	user_to_remove="$1"
-	found_it=0
-	found_it=$((found_it - 1))
-	user_list=()
-	while read x; do
-		user_list+=("$x")
-	done < <(cat $root_dir/system_files/config/users)
-	for x in "${!user_list[@]}"; do
-		if [[ "${user_list[$x]}" == *"$user_to_remove"* ]]; then
-			found_it=$x
-		fi
-	done
-	if ((found_it == -1)); then
-		echo "delusr: $1 not found!"
+if [[ -z "$1" ]]; then
+	echo "delusr: no user given as argument."
+	echo "Usage: delusr [username]"
+else
+	if [[ "$username" == "$1" ]]; then
+		echo "delusr: cannot delete self! Speak to an administrator to remove your own user!"
 	else
-		echo -n "" > $root_dir/system_files/config/users
-		for x in "${!user_list[@]}"; do
-			if (($x == $found_it)); then
-				echo -n ""
-			else echo "${user_list[$x]}" >> $root_dir/system_files/config/users
+		if [[ "$group" == "power" ]]; then
+			user_to_remove="$1"
+			found_it=0
+			found_it=$((found_it - 1))
+			user_list=()
+			while read x; do
+				user_list+=("$x")
+			done < <(cat $root_dir/system_files/config/users)
+			for x in "${!user_list[@]}"; do
+				if [[ "${user_list[$x]}" == *"$user_to_remove"* ]]; then
+					found_it=$x
+				fi
+			done
+			if ((found_it != -1)); then
+				echo -n "" > $root_dir/system_files/config/users
+				for x in "${!user_list[@]}"; do
+					if (($x == $found_it)); then
+						echo -n "" >> $root_dir/system_files/config/users
+					else echo "${user_list[$x]}" >> $root_dir/system_files/config/users
+					fi
+				done
+			else echo "delusr: $1 not found!"
 			fi
-		done
+		else echo "delusr: Permission denied!"
+		fi
 	fi
-else echo "delusr: Permission denied!"
 fi
