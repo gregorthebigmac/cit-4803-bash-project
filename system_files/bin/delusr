@@ -3,6 +3,28 @@
 # This script will check if the user is admin. If they are NOT admin, they cannot delete users.
 
 if [[ "$group" == "power" ]]; then
-	echo "I'm not done!"
+	user_to_remove="$1"
+	found_it=0
+	found_it=$((found_it - 1))
+	user_list=()
+	while read x; do
+		user_list+=("$x")
+	done < <(cat $root_dir/system_files/config/users)
+	for x in "${!user_list[@]}"; do
+		if [[ "${user_list[$x]}" == *"$user_to_remove"* ]]; then
+			found_it=$x
+		fi
+	done
+	if ((found_it == -1)); then
+		echo "delusr: $1 not found!"
+	else
+		echo -n "" > $root_dir/system_files/config/users
+		for x in "${!user_list[@]}"; do
+			if (($x == $found_it)); then
+				echo -n ""
+			else echo "${user_list[$x]}" >> $root_dir/system_files/config/users
+			fi
+		done
+	fi
 else echo "delusr: Permission denied!"
 fi

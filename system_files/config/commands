@@ -6,6 +6,6 @@ edit	| hard part's done with "cd" check permissions. The user can't edit a file 
 list	| DONE
 mkfile	| hard part's done with "cd" check permissions. The user can't make a file if they can't enter the directory
 mkusr	| we can fake it
-move	| 
+move	| hard part's done with "cd" check permissions. The user can't move a file if they can't enter the directory
 search	| 
 errors	| 
