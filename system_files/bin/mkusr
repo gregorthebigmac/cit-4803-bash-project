@@ -1,136 +1,167 @@
 #!/bin/bash
 
+is_user_unique() {
+	pattern=" |'"	# this is how we find spaces in the username
+	if [[ $1 =~ [A-Z] ]]; then
+		echo "You entered $1. Usernames CANNOT contain uppercase letters. Try again."
+		return 0
+	elif [[ $1 =~ $pattern ]]; then
+		echo "Usernames CANNOT contain spaces!"
+		return 0
+	elif [[ $1 == *"admin"* ]]; then
+		echo "Your username cannot be 'admin' nor can it contain the word 'admin'. Try again."
+		return 0
+	elif [[ $1 == *"root"* ]]; then
+		echo "Your username cannot be 'root' nor contain the word 'root'. That's too easy to guess. Try again."
+		return 0
+	elif [[ $1 == *"user"* ]]; then
+		echo "Seriously? 'user'? Try again."
+		return 0
+	else
+		user_list=()
+		while read x; do
+			user_list+=("$x")
+		done < <(cat $root_dir/system_files/config/users)
+		for x in "${!user_list[@]}"; do
+			echo "${user_list[$x]}"
+			temp_user_entry=${user_list[$x]}
+			IFS=' '
+			read -ra ADDR <<< "$temp_user_entry"
+			for y in "${ADDR[@]}"; do
+				if [[ "$y" == "$1" ]]; then
+					echo "mkusr: user $1 is invalid!"
+					return 0
+				fi
+			done
+		done
+	fi
+	return 1
+}
+
+is_password_valid() {
+	spec_char=0
+	upper_char=0
+	lower_char=0
+	num_char=0
+	disallowed=0
+	disallowed_char=""
+	if [[ "$1" == "$2" ]]; then
+		pass_length=${#1}
+		if ((pass_length < 8)); then
+			echo "Password must be 8 characters or more!"
+			return 0
+		else
+			for (( i=0; i<${#1}; i++ )); do
+				num='^[0-9]+$'
+				low_char='[a-z]+$'
+				up_char='[A-Z]+$'
+				spc_char='['!'@#\$%^\&*()_+]'
+				if [[ ${1:$i:1} =~ $num ]]; then
+					num_char=$((num_char + 1))
+				elif [[ ${1:$i:1} =~ $low_char ]]; then
+					lower_char=$((lower_char + 1))
+				elif [[ ${1:$i:1} =~ $up_char ]]; then
+					upper_char=$((upper_char + 1))
+				elif [[ ${1:$i:1} =~ $spc_char ]]; then
+					spec_char=$((spec_char + 1))
+				else
+					disallowed_char=${1:$i:1}
+					disallowed=$((disallowed + 1))
+				fi
+			done
+			if ((disallowed == 0)); then
+				if ((spec_char > 1)); then
+					if ((upper_char > 1)); then
+						if ((lower_char > 1)); then
+							if ((num_char > 1)); then
+								return 1
+							else
+								echo "mkusr: Passwords must contain at least 2 numbers!"
+								return 0
+							fi
+						else
+							echo "mkusr: Passwords must contain at least 2 lowercase characters!"
+							return 0
+						fi
+					else
+						echo "mkusr: Passwords must contain at least 2 uppercase characters!"
+						return 0
+					fi
+				else
+					echo "mkusr: Passwords must contain at least 2 special characters!"
+					return 0
+				fi
+			else
+				echo "mkusr: Passwords may not contain '$disallowed_char'."
+				return 0
+			fi
+		fi
+	else
+		echo "mkusr: Passwords do not match!"
+		return 0
+	fi
+}
+
+is_group_valid() {
+	if [[ "$1" == "p" ]]; then
+		temp_group="power"
+		return 1
+	elif [[ "$1" == "g" ]]; then
+		temp_group="general"
+		return 1
+	elif [[ "$1" == "i" ]]; then
+		temp_group="intern"
+		return 1
+	else echo "$1 is not a valid group!"
+		return 0
+	fi
+}
+
 new_username=""
 new_password=""
 new_group=""
-user_is_unique=1
-password_is_valid=0
-group_is_valid=0
 
-user_list=()
-while read x; do
-	user_list+=("$x")
-done < <(cat $root_dir/system_files/config/users)
-
-if [[ "$group" == "power" ]]; then
-	if [[ -z "$1" ]]; then
-		echo "Enter a username:"
-		read new_username
-	else new_username="$1"
-	fi
-	for x in "${!user_list[@]}"; do
-		if [[ "$new_username" == *"${user_list[$x]}"* ]]; then
-			candidate="${user_list[$x]}"
-			for y in $candidate; do
-				if [[ "$new_username" == "$y" ]]; then
-					echo "mkusr: $new_username already exists!"
-					user_is_unique=0
-					break
-				fi
-			done
-		fi
+if [[ "$group" != "power" ]]; then
+	echo "mkusr: Permission denied! Must be power user to create users!"
+else
+	user_is_unique=0
+	while ((user_is_unique == 0)); do
+		echo "Usernames MUST be all lowercase"
+		echo "Usernames may NOT contain spaces or special characters"
+		echo "Enter a new username:"
+		read temp_username
+		is_user_unique "$temp_username"
+		user_is_unique=$?
+		echo "user_is_unique = $user_is_unique"
+		new_username="$temp_username"
 	done
-	if ((user_is_unique == 1)); then
-		echo "Do you want to create a password for this user, or"
-		echo "do you want to use a default password and let the"
-		echo "user change it upon their first login?"
-		echo "[s] = set manually"
-		echo "[d] = default"
-		read password_choice
-		if [[ "$password_choice" == "s" ]]; then
-			while ((password_is_valid == 0)); do
-				echo "Enter a password for $new_username:"
-				read -s new_password1
-				echo "Confirm new password"
-				read -s new_password2
-				if [[ "$new_password1" == "$new_password2" ]]; then
-					spec_char=0
-					upper_char=0
-					lower_char=0
-					num_char=0
-					disallowed=0
-					disallowed_char=""
-					pass_length=${#new_password1}
-					echo "$pass_length"
-					if (( $pass_length > 7 )); then	# Dont' know why, but setting it to < 8 causes an off-by-one error
-						for ((i=0; i<${#new_password1}; i++)); do
-							num='^[0-9]+$'
-							low_char='[a-z]+$'
-							up_char='[A-Z]+$'
-							spc_char='['!'@#\$%^\&*()_+]'
-							if [[ ${new_password1:$i:1} =~ $num ]]; then
-								echo "Found a number!"
-								num_char=$((num_char + 1))
-							elif [[ ${new_password1:$i:1} =~ $low_char ]]; then
-								echo "Found a lower case letter!"
-								lower_char=$((lower_char + 1))
-							elif [[ ${new_password1:$i:1} =~ $up_char ]]; then
-								echo "Found a upper case letter!"
-								upper_char=$((upper_char + 1))
-							elif [[ ${new_password1:$i:1} =~ $spc_char ]]; then
-								echo "Found a special character!"
-								spec_char=$((spec_char + 1))
-							else
-								echo "Found a disallowed character!"
-								disallowed_char=${new_password1:$i:1}
-								disallowed=$((disallowed + 1))
-							fi
-						done
-					else echo "Password must be 8 characters or more!"
-					fi
-					if ((disallowed == 0)); then
-						if ((spec_char > 1)); then
-							if ((lower_char > 1)); then
-								if ((upper_char > 1)); then
-									if ((num_char > 1)); then
-										password_is_valid=$((password_is_valid + 1))
-										new_password="$new_password1"
-									else echo "mkusr: Passwords must contain at least 2 numbers!"
-									fi
-								else echo "mkusr: Passwords must contain at least 2 upper case letters!"
-								fi
-							else echo "mkusr: Passwords must contain at least 2 lower case letters!"
-							fi
-						else echo "mkusr: Passwords must contain at least 2 special characters!"
-						fi
-					else echo "mkusr: '$disallowed_char' is not allowed in your password. Try again."
-					fi
-				fi
-			done
-		elif [[ "$password_choice" == "d" ]]; then
-			new_password="password"
-			password_is_valid=1
-			echo "Default password has been set. User will be required"
-			echo "to change their password upon first successful login."
-			password_is_valid=1
-		else
-			echo "$password_choice was not an option."
-			echo "mkusr: Exiting..."
-		fi
-		if ((password_is_valid == 1)); then
-			echo "Set a user group for $new_username:"
-			read temp_new_group
-			if [[ "$temp_new_group" == "power" ]]; then
-				new_group="power"
-				group_is_valid=1
-			elif [[ "$temp_new_group" == "general" ]]; then
-				new_group="general"
-				group_is_valid=1
-			elif [[ "$temp_new_group" == "intern" ]]; then
-				new_group="intern"
-				group_is_valid=1
-			else
-				echo "$temp_new_group is not a valid user group!"
-				echo "mkusr: Exiting..."
-			fi
-		fi
-		if ((password_is_valid == 1)); then
-			if ((group_is_valid == 1)); then
-				echo "$new_username $new_password $new_group" >> $root_dir/system_files/config/users
-				echo "mkusr: New user $new_username has been created and registered!"
-				echo "mkusr: Exiting..."
-			fi
-		fi
-	fi
-else echo "mkusr: Permission denied!"
+	password_is_valid=0
+	while ((password_is_valid == 0)); do
+		echo "Passwords MUST contain at least TWO lower case letters!"
+		echo "Passwords MUST contain at least TWO upper case letters!"
+		echo "Passwords MUST contain at least TWO numbers!"
+		echo "Passwords MUST contain at least TWO special characters!"
+		echo "Enter a password for $new_username:"
+		read -s temp_password1
+		echo "Enter again to confirm:"
+		read -s temp_password2
+		is_password_valid "$temp_password1" "$temp_password2"
+		password_is_valid=$?
+		echo "password_is_valid = $password_is_valid"
+		new_password="$temp_password1"
+	done
+	group_is_valid=0
+	while ((group_is_valid == 0)); do
+		echo "What group should $new_username belong to?"
+		echo "[p] power"
+		echo "[g] general"
+		echo "[i] intern"
+		read temp_group
+		is_group_valid "$temp_group"
+		group_is_valid=$?
+		echo "group_is_valid = $group_is_valid"
+	done
+	new_group="$temp_group"
+	new_user_entry="$new_username $new_password $new_group"
+	echo "$new_user_entry" >> $root_dir/system_files/config/users
 fi

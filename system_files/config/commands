@@ -8,5 +8,3 @@ mkfile	| DONE
 mkusr	| we can fake it
 search	| 
 errors	| 
-
-move	| ##### on second thought, let's not do "move" #####

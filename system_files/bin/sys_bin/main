@@ -55,9 +55,6 @@ while [[ "$user_command" != "exit" ]]; do
 			elif [[ "$cmd" == "mkusr" ]]; then
 				. $root_dir/system_files/bin/$user_command
 				break
-			elif [[ "$cmd" == "move" ]]; then
-				. $root_dir/system_files/bin/$user_command
-				break
 			elif [[ "$cmd" == "search" ]]; then
 				. $root_dir/system_files/bin/$user_command
 				break
