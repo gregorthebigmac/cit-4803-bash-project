@@ -5,6 +5,6 @@ deluser	| DONE
 edit	| DONE
 list	| DONE
 mkfile	| DONE
-mkusr	| we can fake it
+mkusr	| DONE
 search	| 
 errors	| 
