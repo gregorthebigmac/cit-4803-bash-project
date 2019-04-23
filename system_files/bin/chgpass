@@ -106,7 +106,7 @@ if ((permission_granted == 1)); then
 			line_num_to_change="$x"
 			line_to_change="${users_list[$x]}"
 			for i in $line_to_change; do
-				"i = $i"
+				echo "i = $i"
 				if [[ "$i" == "power" ]]; then
 					echo "assigning to group power"
 					user_group="power"
@@ -134,8 +134,10 @@ if ((permission_granted == 1)); then
 	echo -n "" > $root_dir/system_files/config/users
 	for x in "${!users_list[@]}"; do
 		if [[ "$x" == "$line_num_to_change" ]]; then
+			line_to_change="$temp_username $new_password $user_group"
 			echo "$line_to_change" >> $root_dir/system_files/config/users
 		else echo "${users_list[x]}" >> $root_dir/system_files/config/users
 		fi
 	done
 fi
+password="$new_password"
