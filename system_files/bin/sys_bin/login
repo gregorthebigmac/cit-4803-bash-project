@@ -2,6 +2,7 @@
 
 export username=""
 export group=""
+export password=""
 
 login_check=0
 while (( login_check == 0)); do

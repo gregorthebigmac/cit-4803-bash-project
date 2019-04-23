@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# This script will check if the user is admin. If they are NOT admin, they cannot delete users.
+
+if [[ "$group" == "power" ]]; then
+	echo "I'm not done!"
+else echo "delusr: Permission denied!"
+fi

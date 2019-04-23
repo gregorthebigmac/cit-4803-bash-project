@@ -22,29 +22,29 @@ if cd $destination_dir; then
 	done < <(cat .$this_dir)
 	if ((found_it == 0)); then
 		for x in "${!permissions_file[@]}"; do
-			echo "currently in permissions_file loop..."
+			#echo "currently in permissions_file loop..."
 			if [[ "${permissions_file[x]}" == *"$group"* ]]; then
-				echo "group = $group"
-				echo "x = ${permissions_file[x]}"
+				#echo "group = $group"
+				#echo "x = ${permissions_file[x]}"
 				permissions_comparison="${permissions_file[x]}"
-				echo "found it!"
+				#echo "found it!"
 				found_it=$((found_it + 1))
 				break
-			else
-				echo "x = ${permissions_file[x]}"
-				echo "group = $group"
+			#else
+				#echo "x = ${permissions_file[x]}"
+				#echo "group = $group"
 			fi
 		done
 	fi
-	echo "exiting permissions_file loop"
+	#echo "exiting permissions_file loop"
 	for x in $permissions_comparison; do
-		echo "currently in permissions_comparison loop..."
-		echo "x = $permissions_comparison"
+		#echo "currently in permissions_comparison loop..."
+		#echo "x = $permissions_comparison"
 		if [[ "$x" == "r" ]]; then
 			found_it=$((found_it + 1))
 			current_dir=$(pwd) # this is if everything checks out and we want to move into the requested dir
 			break
-		else echo "x = $x"
+		#else echo "x = $x"
 		fi
 	done
 	if ((found_it == 1)); then

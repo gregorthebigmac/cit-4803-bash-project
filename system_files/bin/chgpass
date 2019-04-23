@@ -1,21 +1,141 @@
 #!/bin/bash
 
 # Summary: This script will change a user's password.
-#
-#
-# USAGE: $ chgpass -[option] [argument]
-# options:
-# -u [username]	Specifies the username for which you want to change the
-#				password. For instance, if there was a user whose username was
-#				j_smith, the correct command usage would be:
-#
-# 				$ chgpass -u j_smith
-#
-# 				NOTE: Only Admin has the ability to use this option! Regular
-#				users will be rejected by default if they specify the -u option!
-#
-# Alternatively, if no [option] is specified, it is assumed you want to
-# change your own password, and will prompt for and validate your own (current)
-# password before asking you to enter your new password.
 
-echo "correctly called [chgpass]"
+old_password=""
+new_password=""
+temp_username=""
+changing_self=0
+permission_granted=0
+
+if [[ -z "$1" ]]; then
+	temp_username="$username"
+	changing_self=$((changing_self + 1))
+elif [[ "$1" == "me" ]]; then
+	temp_username="$username"
+	changing_self=$((changing_self + 1))
+else
+	if [[ "$group" == "power" ]]; then
+		temp_username="$1"
+		echo "enter a new password for $temp_username:"
+		permission_granted=$((permission_granted + 1))
+	else echo "chgpass: Permission denied!"
+	fi
+fi
+
+if ((changing_self == 1)); then
+	echo "Enter current password for $temp_username:"
+	read -s old_password
+	if [[ "$old_password" == "$password" ]]; then
+		permission_granted=$((permission_granted + 1))
+	else echo "chgpass: Permission denied!"
+	fi
+fi
+
+if ((permission_granted == 1)); then
+	password_is_valid=0
+	echo "Passwords MUST contain at least TWO lower case letters!"
+	echo "Passwords MUST contain at least TWO upper case letters!"
+	echo "Passwords MUST contain at least TWO numbers!"
+	echo "Passwords MUST contain at least TWO special characters!"
+	while (( $password_is_valid == 0 )); do
+		echo "Create a password for $temp_username..."
+		read -s new_password1
+		echo "Enter again to confirm..."
+		read -s new_password2
+		spec_char=0
+		upper_char=0
+		lower_char=0
+		num_char=0
+		disallowed=0
+		disallowed_char=""
+		if [[ "$new_password1" == "$new_password2" ]]; then
+			pass_length=${#new_password1}
+			if (( $pass_length < 8 )); then
+				echo "Password must be 8 characters or more!"
+			fi
+			for (( i=0; i<${#new_password1}; i++ )); do
+				num='^[0-9]+$'
+				low_char='[a-z]+$'
+				up_char='[A-Z]+$'
+				spc_char='['!'@#\$%^\&*()_+]'
+				if [[ ${new_password1:$i:1} =~ $num ]]; then
+					num_char=$((num_char + 1))
+				elif [[ ${new_password1:$i:1} =~ $low_char ]]; then
+					lower_char=$((lower_char + 1))
+				elif [[ ${new_password1:$i:1} =~ $up_char ]]; then
+					upper_char=$((upper_char + 1))
+				elif [[ ${new_password1:$i:1} =~ $spc_char ]]; then
+					spec_char=$((spec_char + 1))
+				else
+					disallowed_char=${new_password1:$i:1}
+					disallowed=$((disallowed + 1))
+				fi
+			done
+			if ((disallowed == 0)); then
+				if ((spec_char > 1)); then
+					if ((upper_char > 1)); then
+						if ((lower_char > 1)); then
+							if ((num_char > 1)); then
+								password_is_valid=$((password_is_valid + 1))
+								new_password=$new_password1
+							else echo "chgpass: Passwords must contain at least 2 numbers!"
+							fi
+						else echo "chgpass: Passwords must contain at least 2 lowercase characters!"
+						fi
+					else echo "chgpass: Passwords must contain at least 2 uppercase characters!"
+					fi
+				else echo "chgpass: Passwords must contain at least 2 special characters!"
+				fi
+			else echo "chgpass: '$disallowed_char' is not allowed in your password. Try again."
+			fi
+		fi
+	done
+	users_list=()
+	while read x; do
+		users_list+=("$x")
+	done < <(cat $root_dir/system_files/config/users)
+
+	line_num_to_change=0
+	line_to_change=""
+	user_group=""
+
+	for x in "${!users_list[@]}"; do
+		if [[ "${users_list[$x]}" == *"$temp_username"* ]]; then
+			echo "found it!"
+			line_num_to_change="$x"
+			line_to_change="${users_list[$x]}"
+			for i in $line_to_change; do
+				"i = $i"
+				if [[ "$i" == "power" ]]; then
+					echo "assigning to group power"
+					user_group="power"
+				elif [[ "$i" == "standard" ]]; then
+					echo "assigning to group standard"
+					user_group="standard"
+				elif [[ "$i" == "intern" ]]; then
+					echo "assigning to group intern"
+					user_group="intern"
+				else
+					echo "else: assigning to group intern"
+					user_group="intern"
+				fi
+			done
+		else
+			echo "temp_username = $temp_username"
+			echo "user_list[$x] = ${users_list[$x]}"
+			echo "Not it"
+		fi
+	done
+
+	echo "line_num_to_change = $line_num_to_change"
+	echo "line_to_change = $line_to_change"
+
+	echo -n "" > $root_dir/system_files/config/users
+	for x in "${!users_list[@]}"; do
+		if [[ "$x" == "$line_num_to_change" ]]; then
+			echo "$line_to_change" >> $root_dir/system_files/config/users
+		else echo "${users_list[x]}" >> $root_dir/system_files/config/users
+		fi
+	done
+fi

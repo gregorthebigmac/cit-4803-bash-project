@@ -3,6 +3,7 @@
 # check for permission, and then delete file (if they have permission), using
 # $ rm [filename]
 
-# HINT: The prof already outlined in the project description (see repo_files/description.md for details) that ONLY the power user may delete files in ANY directory. So your permissions check should be pretty simple. If the user trying to run this script is NOT a power user, then they cannot execute this command.
-
-echo "correctly called [del]"
+if [[ "$group" == "power" ]]; then
+	echo "I'm not done yet!"
+else echo "del: Permission denied!"
+fi

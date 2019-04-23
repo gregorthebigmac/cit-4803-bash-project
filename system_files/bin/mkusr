@@ -15,7 +15,7 @@ password="password"
 new_username="$3"
 new_user_group="$4"
 
-if [ "$user_group" == "power" ] || [ "$username" == "dev" ]; then		# don't forget to remove "dev"
+if [[ "$group" == "power" ]]; then
 	if [ -z "$new_username" ]; then
 		echo "What would you like to call this user?"
 		read new_username
@@ -88,11 +88,11 @@ if [ "$user_group" == "power" ] || [ "$username" == "dev" ]; then		# don't forge
 		elif [[ "$new_user_group" == "intern" ]]; then
 			valid_user_group=$(( valid_user_group + 1 ))
 		fi
-		if (( $valid_user_group == 0 )); then
+		if ((valid_user_group == 0)); then
 			echo "mkusr: $new_user_group is not a valid user group!"
 			echo "mkusr: Exiting..."
 			exit 7
-		elif (( $valid_user_group == 1 )); then
+		elif ((valid_user_group == 1)); then
 			echo "$new_username $password $new_user_group" >> "$root_dir/system_files/config/users"
 			echo "mkusr: $new_username has been added as a new user!
 			mkusr: Exiting..."
