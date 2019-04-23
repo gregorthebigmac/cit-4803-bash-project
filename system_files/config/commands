@@ -1,6 +1,6 @@
 cd		| DONE
 chgpass	| DONE
-del 	| we can fake it
+del 	| DONE
 deluser	| we can fake it
 edit	| hard part's done with "cd" check permissions. The user can't edit a file if they can't enter the directory
 list	| DONE

@@ -4,6 +4,9 @@
 # $ rm [filename]
 
 if [[ "$group" == "power" ]]; then
-	echo "I'm not done yet!"
+	if rm "$1"; then
+		echo "deleting $1...[done]"
+	else echo "del: $1 does not exist!"
+	fi
 else echo "del: Permission denied!"
 fi
