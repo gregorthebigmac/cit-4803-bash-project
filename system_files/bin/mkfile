@@ -1,7 +1,22 @@
 #!/bin/bash
 
-# this script will check the user's permissions and the directory permissions to ensure that the user has the authority to create files in the directory specified.
-# If the user has permission to create the file, AND the file does not exist, then this script will run:
-# $ touch [filename]
+filename=""
 
-echo "correctly called [mkfile]"
+if [[ -z "$1" ]]; then
+	echo "edit: no file specified."
+	echo "Usage: mkfile [filename]    create file in current directory."
+else
+	filename="$1"
+	permission_granted=1
+	for (( i=0; i<${#filename}; i++ )); do
+		if [[ "${filename:$i:1}" == "/" ]]; then
+			echo "edit: Cannot create files outside of current directory!"
+			echo "      Move to directory where file will be located"
+			echo "        before trying to create file!"
+			permission_granted=$((permission_granted - 1))
+		fi
+	done
+	if ((permission_granted == 1)); then
+		touch "$1"
+	fi
+fi
