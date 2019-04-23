@@ -3,4 +3,4 @@
 # shellcheck source=src/system_files/bin/sys_bin/error_report.sh
 source $root_dir/system_files/bin/sys_bin/error_report.sh
 
-ls -l $current_dir
+ls -l --color --group-directories-first $current_dir

@@ -11,8 +11,9 @@ permissions_comparison=""
 found_it=0
 if cd $destination_dir; then
 	this_path=$(pwd)
-	this_dir="$(basename $this_path)"
+	this_dir="$(basename "$this_path")"
 	while read x; do
+		#echo "$x"
 		if [[ "$x" == "root" ]]; then
 			echo "cd: not allowed! Already at root of file system!"
 			cd $root_dir/file_system
@@ -42,6 +43,7 @@ if cd $destination_dir; then
 		#echo "x = $permissions_comparison"
 		if [[ "$x" == "r" ]]; then
 			found_it=$((found_it + 1))
+			#echo "cd: permission granted!"
 			current_dir=$(pwd) # this is if everything checks out and we want to move into the requested dir
 			break
 		#else echo "x = $x"

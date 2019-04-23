@@ -1,6 +1,23 @@
 #!/bin/bash
 
-# This will check if the user has permission to edit files in the directory and on the file itself before running the command:
-# $ nano [filename.ext]
+filename=""
 
-echo "correctly called [edit]"
+if [[ -z "$1" ]]; then
+	echo "edit: no file specified."
+	echo "Usage: edit [filename]    Edit existing file in current directory."
+	echo "       edit [new]         Create and edit new file in current directory."
+else
+	filename="$1"
+	permission_granted=1
+	for (( i=0; i<${#filename}; i++ )); do
+		if [[ "${filename:$i:1}" == "/" ]]; then
+			echo "edit: Cannot modify files outside of current directory!"
+			echo "      Move to directory where file is located before"
+			echo "        trying to edit file!"
+			permission_granted=$((permission_granted - 1))
+		fi
+	done
+	if ((permission_granted == 1)); then
+		nano "$1"
+	fi
+fi

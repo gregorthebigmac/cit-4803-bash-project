@@ -1,7 +1,7 @@
 cd		| DONE
 chgpass	| DONE
 del 	| DONE
-deluser	| we can fake it
+deluser	| DONE
 edit	| hard part's done with "cd" check permissions. The user can't edit a file if they can't enter the directory
 list	| DONE
 mkfile	| hard part's done with "cd" check permissions. The user can't make a file if they can't enter the directory
