@@ -6,15 +6,50 @@ source $root_dir/system_files/bin/sys_bin/error_report.sh
 source $root_dir/system_files/bin/sys_bin/get_dir.sh
 
 destination_dir="$1"
-
+permissions_file=()
+permissions_comparison=""
+found_it=0
 if cd $destination_dir; then
 	this_path=$(pwd)
 	this_dir="$(basename $this_path)"
-	permissions_file="$(cat ".$this_dir")"
-	if [[ "$permissions_file" == "root" ]]; then
-		echo "cd: not allowed! Already at root of file system!"
-		cd $root_dir/file_system
-	else current_dir=$(pwd)
+	while read x; do
+		if [[ "$x" == "root" ]]; then
+			echo "cd: not allowed! Already at root of file system!"
+			cd $root_dir/file_system
+			break
+		else permissions_file+=("$x")
+		fi
+	done < <(cat .$this_dir)
+	if ((found_it == 0)); then
+		for x in "${!permissions_file[@]}"; do
+			echo "currently in permissions_file loop..."
+			if [[ "${permissions_file[x]}" == *"$group"* ]]; then
+				echo "group = $group"
+				echo "x = ${permissions_file[x]}"
+				permissions_comparison="${permissions_file[x]}"
+				echo "found it!"
+				found_it=$((found_it + 1))
+				break
+			else
+				echo "x = ${permissions_file[x]}"
+				echo "group = $group"
+			fi
+		done
+	fi
+	echo "exiting permissions_file loop"
+	for x in $permissions_comparison; do
+		echo "currently in permissions_comparison loop..."
+		echo "x = $permissions_comparison"
+		if [[ "$x" == "r" ]]; then
+			found_it=$((found_it + 1))
+			current_dir=$(pwd) # this is if everything checks out and we want to move into the requested dir
+			break
+		else echo "x = $x"
+		fi
+	done
+	if ((found_it == 1)); then
+		echo "cd: Permission denied!"
+		cd $current_dir
 	fi
 else echo "cd: $destination_dir doesn't exist!"
 fi
