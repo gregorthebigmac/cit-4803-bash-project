@@ -1,3 +1,14 @@
 #!/bin/bash
 
-echo "successfully entered [errors]"
+if [[ -z "$1" ]]; then
+	echo "errors: msg: no search file or path given. Dump ALL error messages? y/n"
+	read answer
+	if [[ "$answer" == "y" ]]; then
+		if cd $root_dir/file_system/log/errors; then
+			echo -n "$(pwd)" > $root_dir/system_files/bin/sys_bin/.current_dir
+			current_dir="$(pwd)"
+		fi
+			grep "ERROR" *
+	fi
+else grep "ERROR" $1
+fi

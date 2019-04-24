@@ -1,10 +1,10 @@
-cd		| DONE
-chgpass	| DONE
-del 	| DONE
-deluser	| DONE
-edit	| DONE
-list	| DONE
-mkfile	| DONE
-mkusr	| DONE
-search	| 
-errors	| 
+cd
+chgpass
+del
+deluser
+edit
+list
+mkfile
+mkusr
+search
+errors
