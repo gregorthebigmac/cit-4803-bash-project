@@ -23,7 +23,7 @@ is_user_unique() {
 			user_list+=("$x")
 		done < <(cat $root_dir/system_files/config/users)
 		for x in "${!user_list[@]}"; do
-			echo "${user_list[$x]}"
+			#echo "${user_list[$x]}"
 			temp_user_entry=${user_list[$x]}
 			IFS=' '
 			read -ra ADDR <<< "$temp_user_entry"
@@ -132,7 +132,7 @@ else
 		read temp_username
 		is_user_unique "$temp_username"
 		user_is_unique=$?
-		echo "user_is_unique = $user_is_unique"
+		#echo "user_is_unique = $user_is_unique"
 		new_username="$temp_username"
 	done
 	password_is_valid=0
@@ -147,7 +147,7 @@ else
 		read -s temp_password2
 		is_password_valid "$temp_password1" "$temp_password2"
 		password_is_valid=$?
-		echo "password_is_valid = $password_is_valid"
+		#echo "password_is_valid = $password_is_valid"
 		new_password="$temp_password1"
 	done
 	group_is_valid=0
@@ -159,7 +159,7 @@ else
 		read temp_group
 		is_group_valid "$temp_group"
 		group_is_valid=$?
-		echo "group_is_valid = $group_is_valid"
+		#echo "group_is_valid = $group_is_valid"
 	done
 	new_group="$temp_group"
 	new_user_entry="$new_username $new_password $new_group"
